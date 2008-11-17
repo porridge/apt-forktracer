@@ -1,6 +1,8 @@
 This package was written and debianized by Marcin Owsiany <porridge@debian.org>
 in November 2008.
 
+The home page is http://marcin.owsiany.pl/apt-forktracer-page
+
 apt-forktracer - a utility for managing package versions
 Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
 
