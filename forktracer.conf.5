@@ -1,0 +1,214 @@
+." apt-forktracer - a utility for managing package versions
+." Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
+."
+." This program is free software; you can redistribute it and/or modify
+." it under the terms of the GNU General Public License as published by
+." the Free Software Foundation; either version 2 of the License, or
+." (at your option) any later version.
+."
+." This program is distributed in the hope that it will be useful,
+." but WITHOUT ANY WARRANTY; without even the implied warranty of
+." MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+." GNU General Public License for more details.
+."
+." You should have received a copy of the GNU General Public License along
+." with this program; if not, write to the Free Software Foundation, Inc.,
+." 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+.TH FORKTRACER.CONF 5 "2008-11-16" "Debian Project"
+.SH NAME
+forktracer.conf \- apt-forktracer configuration file
+
+.SH DESCRIPTION
+.B apt-forktracer
+reports "non-standard" packages which are installed in the system.
+The configuration files let you ignore (skip reporting) some of them, provided
+they meet certain criteria.
+The program reads the
+.I /etc/apt/forktracer.conf
+file, as well as
+.I /etc/apt/forktracer.d/*.conf
+(skipping hidden files).
+
+.PP
+A config file consists of any number of stanzas, separated with at least one empty lines.
+A stanza has the following format:
+.sp 1
+.nf
+    Package: package
+    Accept-Origin: origin1
+    Track-Origin: origin2
+    Track-Version: version
+.fi
+.sp 1
+All these lines in a stanza are required, and they have the following meaning:
+.TP
+.B package
+the name of the package to which this stanza applies
+.TP
+.B origin1
+the value of the Origin field of the source, from which a package should be ignored.
+A package will be ignored, if its candidate version comes from 
+.BR source1 ,
+and at the same time meets the condition given by the
+.B Track-*
+fields.
+A special value
+.B "*"
+means, that a package should be ignored regardless of the source of the
+candidate version.
+.TP
+.B origin2
+the value of the Origin field of the source, from which the newest available version should be tracked.
+A special value
+.B "*"
+means, that a generally newest available version should be tracked, regardless of source.
+.TP
+.B version
+is the required version string available from the
+.B origin2
+source.
+Apart from a literal version string, the following special values may be used:
+.BR =candidate ,
+which means the current candidate version, and
+.BR =candidate-base ,
+which means the base version (see below) of the current candidate version.
+.PP
+The above stanza would cause
+.B package
+to be skipped from program output, as long as its candidate version comes from
+.BR origin1 ,
+and at the same time its newest version available from
+.B origin2
+equals
+.BR version .
+.PP
+If there is more than one stanza for a given package, then it is omitted from
+the program output if at least one of them matches the current situation.
+
+.SS "Base version definition"
+A base version is extracted from a given version by stripping from its end the
+shortest string starting with a tilde character. For example for version
+.B 1:1.2-3~4~5
+the base version is
+.BR 1:1.2-3~4 .
+
+.SS "Default configuration"
+If for a given package
+.B package
+there is no stanza in the configuration, then the program acts as if the
+following two stanzas existed:
+.sp 1
+.nf
+    Package: package 
+    Accept-Origin: *
+    Track-Origin: distributor
+    Track-Version: =candidate
+
+    Package: package
+    Accept-Origin: *
+    Track-Origin: distributor
+    Track-Version: =candidate-base
+.fi
+.sp 1
+where
+.B distributor
+is the system distributor's identifier, as returned by
+.B "lsb_release \-\-id"
+or by the
+.B DISTRIB_ID
+field in the
+.I /etc/lsb-release
+file.
+
+
+.SH EXAMPLES
+.SS "Unofficial package"
+.B apt-forktracer
+reports packages which are not available from any official source, for example:
+.sp 1
+.nf
+    puppet-softwarelab (0.2) [SoftwareLab: 0.2 0.1]
+.fi
+.sp 1
+The following stanza makes it skip such packages:
+.sp 1
+.nf
+    Package: puppet-softwarelab
+    Accept-Origin: SoftwareLab
+    Track-Origin: *
+    Track-Version: =candidate
+.fi
+.sp 1
+If the
+.B puppet-softwarelab
+package will be "pinned" to "release o=Softwarelab", then such configuration will
+make
+.B apt-forktracer
+report if
+.B puppet-softwarelab
+appears in any source other than
+.B SoftwareLab
+in a version newer than the one available from it.
+
+.SS Backport
+Installing a backport has a similar effect to installing an unofficial package:
+.sp 1
+.nf
+    spamc (3.2.3-0.volatile1) [Debian: 3.1.7-2] [volatile.debian.org: 3.2.3-0.volatile1]
+.fi
+.sp 1
+The following stanza will cause such package to be skipped:
+.sp 1
+.nf
+    Package: spamc
+    Accept-Origin: volatile.debian.org
+    Track-Origin: *
+    Track-Version: =candidate
+.fi
+.sp 1
+In this situation a small official version string change (for example to
+3.1.7-2etch1) will be silently ignored. Such configuration is therefore
+only suitable for cases where you trust the person providing the backport to
+carefully track changes in the stable edition and make sure they are incorporated
+in the backport they are distributing.
+In other cases, you should probably use the following configuration.
+
+.SS "Own modifications"
+Sometimes there is a situation where you make minor changes to a package, and you
+would like to know when a new official stable version is released, so that you
+can update your modified version.
+.sp 1
+.nf
+    policyd-weight (0.1.14-beta-6etch2.0.sl.1) [Debian: 0.1.14-beta-6etch2] [SoftwareLab: 0.1.14-beta-6etch2.0.sl.1]
+.fi
+.sp 1
+The following configuration is useful in such cases:
+.sp 1
+.nf
+    Package: policyd-weight
+    Accept-Origin: SoftwareLab
+    Track-Origin: Debian
+    Track-Version: 0.1.14-beta-6etch2
+.fi
+.sp 1
+It is worth mentioning, that if you apply a certain convention when numbering
+the modified version, then the
+.B "Default configuration"
+described before is sufficient.
+In this case, if the modified version would have a version number such as
+.BR 0.1.14-beta-6etch2~sl.1
+then the above-mentioned stanza would be unnecessary.
+What is more, there would be no need to keep any configuration up-to-date in
+case of new stable version releases, because the default configuration is
+created dynamically based on the current situation.
+
+.SH FILES
+.I /etc/apt/forktracer.conf
+.br
+.I /etc/apt/forktracer.d/*.conf
+
+.SH "SEE ALSO"
+.BR apt\-cache (8),
+.BR apt\-forktracer (8),
+.BR apt_preferences (5).
+

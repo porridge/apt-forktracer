@@ -1,0 +1,140 @@
+." apt-forktracer - a utility for managing package versions
+." Copyright (C) 2008 Marcin Owsiany <marcin@owsiany.pl>
+."
+." This program is free software; you can redistribute it and/or modify
+." it under the terms of the GNU General Public License as published by
+." the Free Software Foundation; either version 2 of the License, or
+." (at your option) any later version.
+."
+." This program is distributed in the hope that it will be useful,
+." but WITHOUT ANY WARRANTY; without even the implied warranty of
+." MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+." GNU General Public License for more details.
+."
+." You should have received a copy of the GNU General Public License along
+." with this program; if not, write to the Free Software Foundation, Inc.,
+." 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+.TH APT-FORKTRACER 8 2008-11-16 "Projekt Debian"
+.SH NAZWA
+apt-forktracer \- narzędzie wspomagające zarządzanie wersjami pakietów
+
+.SH SKŁADNIA
+.B apt-forktracer [ \-v ]
+
+.SH OPIS
+
+.SS Wprowadzenie
+Utrzymanie systemu Debian w wersji stabilnej często wymaga instalacji
+nieoficjalnych wersji programów:
+.TP
+backporty
+Nowsze wersje pakietów, przystosowane do wersji stabilnej, zawierające nową
+funkcjonalność niedostępną w danej edycji stabilnej. W tym przypadku wersja
+pakietu najczęściej jest nowsza niż wersja dostępna w edycji stabilnej. Oznacza
+to, że teoretycznie nie trzeba "przypinać" pakietu do tej wersji, ponieważ APT
+wybierze ją domyślnie.
+.TP
+lokalne zmiany wersji oficjalnej
+Najczęściej są to drobne zmiany, więc wystarcza niewielka modyfikacja numeru
+wersji pakietu. Można to zrobić na dwa sposoby:
+.sp 1
+Spróbować wymyślić taki numer wersji, który byłby nowszy niż obecny oficjalny,
+ale starszy niż
+.I następny
+oficjalny.
+Sposób ten nie wymaga "przypinania" pakietu, ale w praktyce może łatwo zawieść
+w nieoczekiwanym momencie \- nigdy nie wiadomo tak naprawdę jaki będzie
+następny oficjalny numer wersji pakietu \- może okazać się starszy, niż
+wymyślony przez nas.
+.sp 1
+Drugi sposób polega na takiej modyfikacji numeru wersji, aby była ona starsza od oficjalnej.
+Bardzo przydatny tutaj jest znak tyldy, który dpkg traktuje w specjalny sposób:
+wystarczy "doklejenie" do numeru wersji napisu zaczynającego się od tyldy, na
+przykład
+.B 1.2
+\(->
+.BR 1.2~sl.1 .
+Ten sposób wymaga jednoczesnego "przypięcia" pakietu do danej wersji lub
+źródła, ale jest bardziej niezawodny, bo działa niezależnie od tego jaka będzie
+kolejna wersja oficjalna.
+.PP
+W obu powyższych przypadkach mamy jednak do czynienia z tym samym problemem:
+APT nie piśnie ani słówkiem, jeśli pojawi się jakaś nowsza oficjalna wersja
+pakietu (np. poprawka dotycząca bezpieczeństwa, lub inna poprawka w edycji
+stabilnej).
+Oznacza to, że można przegapić jakąś istotną zmianę.
+.sp 1
+.B apt-forktracer
+to narzędzie ułatwiające śledzenie oficjalnych wersji pakietów, które
+zainstalowano lokalnie w innej wersji.
+
+.SS "Definicja oficjalnej wersji pakietu"
+Jest to taka wersja pakietu, która jest dostępny ze źródła, którego plik
+Release zawiera nagłówek Origin o wartości takiej, jak identyfikator
+dystrybutora systemu, określony przez wynik komendy
+.B "lsb_release \-\-id"
+lub przez pole
+.B DISTRIB_ID
+w pliku
+.IR /etc/lsb-release .
+
+.SS "Działanie programu"
+.B apt-forktracer
+analizuje każdy zainstalowany pakiet z osobna, wypisując na wyjściu te, które
+są w "niestandardowym" stanie. Znaczenie stanu "niestandardowego" zależy od
+trybu w jakim działa program:
+.TP
+tryb domyślny (nie-gadatliwy)
+stan ten oznacza pakiety w niepoprawnym stanie (na przykład brak wersji
+kandydującej), oraz takie, których kandydująca wersja jest inna niż najnowsza
+dostępna oficjalna wersja.
+.TP
+tryb gadatliwy
+stan ten oznacza dodatkowo pakiety których zainstalowana wersja różni się od kandydującej.
+.PP
+W trybie domyślnym dodatkowo czytane są pliki konfiguracyjne, które umożliwiają
+nakazanie programowi ignorowanie wybranych "niestandardowych" pakietów, o ile
+spełniają pewne warunki.
+Jeśli dla danego pakietu nie ma konfiguracji, to obowiązuje dla niego konfiguracja domyślna.
+Więcej informacji można znaleźć w
+.BR forktracer.conf (5).
+
+.SS "Format komunikatów"
+Program wypisuje komunikaty takie jak następujący:
+.sp 1
+.nf
+    foobar (1.2.3->1.2.4) [Debian: 1.2.3 1.2.4] [Other origin: 1.2.2]
+.fi
+.sp 1
+Gdzie:
+.TP
+.B foobar
+nazwa pakietu
+.TP
+.B 1.2.3
+zainstalowana wersja pakietu
+.TP
+.B 1.2.4
+kandydująca wersja pakietu - patrz
+.BR apt-cache (8).
+.TP
+.B Debian
+wartość pola "Origin" jednego ze źródeł pakietu. Po dwukropku są wymienione dostępne z tego źródła wersje.
+.TP
+.B "Other origin"
+nazwa innego źródła.
+
+.SH OPCJE
+.TP
+.B \-v
+Włącza tryb "gadatliwy".
+
+.SH PLIKI
+.I /etc/apt/forktracer.conf
+.br
+.I /etc/apt/forktracer.d/*.conf
+
+.SH "PATRZ TEŻ"
+.BR forktracer.conf (5),
+.BR apt_preferences (5),
+.BR apt-cache (8).

@@ -1,0 +1,206 @@
+." apt-forktracer - a utility for managing package versions
+." Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
+."
+." This program is free software; you can redistribute it and/or modify
+." it under the terms of the GNU General Public License as published by
+." the Free Software Foundation; either version 2 of the License, or
+." (at your option) any later version.
+."
+." This program is distributed in the hope that it will be useful,
+." but WITHOUT ANY WARRANTY; without even the implied warranty of
+." MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+." GNU General Public License for more details.
+."
+." You should have received a copy of the GNU General Public License along
+." with this program; if not, write to the Free Software Foundation, Inc.,
+." 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+.TH FORKTRACER.CONF 5 "2008-11-16" "Projekt Debian"
+.SH NAZWA
+forktracer.conf \- konfiguracja programu apt-forktracer
+
+.SH OPIS
+Program
+.B apt-forktracer
+zgłasza "niestandardowe" pakiety zainstalowane w systemie.
+Pliki konfiguracyjne tego programu umożliwiają ignorowanie (pominięcie
+zgłaszania) wybranych z nich, o ile spełniają pewne warunki.
+Program czyta plik
+.I /etc/apt/forktracer.conf
+oraz pliki
+.I /etc/apt/forktracer.d/*.conf
+(za wyjątkiem plików ukrytych).
+
+Plik konfiguracyjny składa się z dowolnej ilości zwrotek, rozdzielonych jedną
+lub wieloma pustymi liniami.
+Format zwrotki jest następujący:
+.sp 1
+.nf
+    Package: pakiet
+    Accept-Origin: źródło1
+    Track-Origin: źródło2
+    Track-Version: wersja
+.fi
+.sp 1
+Wszystkie linie w zwrotce są wymagane, a ich znaczenie jest następujące:
+.TP
+.B pakiet
+nazwa pakietu, którego dotyczy dana zwrotka
+.TP
+.B źródło1
+wartość pola Origin źródła, z którego należy ignorować dany pakiet. Pakiet
+zostanie zignorowany, jeśli jego kandydująca wersja pochodzi ze
+.BR źródła1 ,
+i jednocześnie spełniony jest warunek dany w polach
+.BR Track-* .
+Specjalna wartość
+.B "*"
+oznacza, że należy ignorować pakiet niezależnie od źródła z którego pochodzi
+wersja kandydująca.
+.TP
+.B źródło2
+wartość pola Origin źródła, którego najnowszą wersję należy śledzić. Specjalna wartość
+.B "*"
+oznacza, że należy śledzić ogólnie najnowszą dostępną wersję.
+.TP
+.B wersja
+to wymagany numer najnowszej wersji dostępnej ze źródła
+.BR źródło2 .
+Oprócz dosłownego numeru wersji, można tu także użyć jednej z dwóch wartości
+specjalnych:
+.B =candidate
+- oznaczająca aktualną wersję kandydującą, oraz
+.B =candidate-base
+- oznaczająca wersję podstawową (patrz niżej) aktualnej wersji kandydującej.
+.PP
+Powyższa zwrotka powoduje pominięcie pakietu
+.B pakiet
+z wyjścia programu, o ile kandydująca wersja pakietu pochodzi ze źródła
+.BR źródło1 ,
+i jednocześnie najnowsza wersja tegoż pakietu dostępna ze źródła
+.B źródło2
+jest równa
+.BR wersja .
+.PP
+Jeśli dla danego pakietu istnieje więcej niż jedna zwrotka, to jest on pomijany
+jeśli choć jedna z nich pasuje do obecnej sytuacji.
+
+.SS "Definicja wersji podstawowej"
+Wersję podstawową uzyskuje się poprzez obcięcie z końca danej wersji
+najkrótszego napisu zaczynającego się od tyldy. Na przykład dla wersji
+.B 1:1.2-3~4~5
+wersja podstawowa to
+.BR 1:1.2-3~4 .
+
+.SS "Konfiguracja domyślna"
+Jeśli dla pewnego pakietu
+.B pakiet
+nie ma żadnej zwrotki w konfiguracji, to program
+działa tak, jakby istniały następujące dwie zwrotki:
+.sp 1
+.nf
+    Package: pakiet
+    Accept-Origin: *
+    Track-Origin: dystrybutor
+    Track-Version: =candidate
+
+    Package: pakiet
+    Accept-Origin: *
+    Track-Origin: dystrybutor
+    Track-Version: =candidate-base
+.fi
+.sp 1
+gdzie
+.B dystrybutor
+to identyfikator dystrybutora systemu, określony przez wynik komendy
+.B "lsb_release \-\-id"
+lub przez pole
+.B DISTRIB_ID
+w pliku
+.IR /etc/lsb-release .
+
+
+.SH PRZYKŁADY
+.SS "Nieoficjalny pakiet"
+.B apt-forktracer
+zgłasza pakiety niedostępne z żadnego źródła oficjalnego, na przykład:
+.sp 1
+.nf
+    puppet-softwarelab (0.2) [SoftwareLab: 0.2 0.1]
+.fi
+.sp 1
+Aby tego uniknąć, należy dodać do pliku konfiguracyjnego następującą zwrotkę:
+.sp 1
+.nf
+    Package: puppet-softwarelab
+    Accept-Origin: SoftwareLab
+    Track-Origin: *
+    Track-Version: =candidate
+.fi
+.sp 1
+Jeśli dodatkowo "przypniemy" pakiet do źródła "release o=Softwarelab", to taka
+konfiguracja spowoduje, że
+.B apt-forktracer
+ostrzeże nas, jeśli w jakimś innym źródle pojawi się taki pakiet w wersji
+nowszej niż dostępne ze źródła SoftwareLab.
+
+.SS Backport
+Instalacja backportu ma podobny efekt jak instalacja pakietu nieoficjalnego:
+.sp 1
+.nf
+    spamc (3.2.3-0.volatile1) [Debian: 3.1.7-2] [volatile.debian.org: 3.2.3-0.volatile1]
+.fi
+.sp 1
+Aby wymusić pomijanie tego pakietu, należy dodać analogiczną zwrotkę do konfiguracji:
+.sp 1
+.nf
+    Package: spamc
+    Accept-Origin: volatile.debian.org
+    Track-Origin: *
+    Track-Version: =candidate
+.fi
+.sp 1
+W tej sytuacji niewielka zmiana wersji pakietu oficjalnego (na przykład na
+3.1.7-2etch1) pozostanie niezauważona. Konfiguracja ta nadaje się więc
+wyłącznie w przypadkach, gdy ufamy, że osoba udostępniająca zainstalowany przez
+nas backport śledzi zmiany wersji stabilnej i będzie wydawać poprawione
+backporty, zawierające niezbędne zmiany z edycji stabilnej.
+Jeśli nie mamy takiego zaufania, należy użyć następującej konfiguracji.
+
+.SS "Własne poprawki"
+Czasami pojawia się sytuacja, gdy wprowadziliśmy do pakietu niewielkie
+poprawki, i chcemy wiedzieć, gdy pojawi się nowsza wersja oficjalna, aby móc
+utworzyć nową wersję poprawioną.
+.sp 1
+.nf
+    policyd-weight (0.1.14-beta-6etch2.0.sl.1) [Debian: 0.1.14-beta-6etch2] [SoftwareLab: 0.1.14-beta-6etch2.0.sl.1]
+.fi
+.sp 1
+Jest wtedy przydatna poniższa konfiguracja:
+.sp 1
+.nf
+    Package: policyd-weight
+    Accept-Origin: SoftwareLab
+    Track-Origin: Debian
+    Track-Version: 0.1.14-beta-6etch2
+.fi
+.sp 1
+Warto zauważyć, że jeśli tworząc poprawioną wersję pakietu zastosujemy się do
+pewnej konwencji numeracji wersji, to do uzyskania tego efektu wystarczy
+opisana wyżej
+.BR "Konfiguracja domyślna" .
+W tym przypadku wystarczyłoby nadać pakietowi wersję
+.BR 0.1.14-beta-6etch2~sl.1
+i powyższa zwrotka konfiguracji stałaby się zbędna.
+Co ważniejsze, odpada wtedy konieczność aktualizacji konfiguracji przy
+wydawaniu nowej wersji pakietu, ponieważ konfiguracja domyślna jest generowana
+automatycznie na podstawie obecnej sytuacji.
+
+.SH PLIKI
+.I /etc/apt/forktracer.conf
+.br
+.I /etc/apt/forktracer.d/*.conf
+
+.SH "PATRZ TEŻ"
+.BR apt\-cache (8),
+.BR apt\-forktracer (8),
+.BR apt_preferences (5).

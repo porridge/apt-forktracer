@@ -1,0 +1,5 @@
+apt-forktracer (0.1) unstable; urgency=low
+
+  * Initial release
+
+ -- Marcin Owsiany <porridge@debian.org>  Mon, 17 Nov 2008 07:33:15 +0000
