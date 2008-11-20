@@ -1,5 +1,5 @@
 apt-forktracer (0.1) unstable; urgency=low
 
-  * Initial release
+  * Initial release (closes: #506151, the ITP bug)
 
- -- Marcin Owsiany <porridge@debian.org>  Mon, 17 Nov 2008 07:33:15 +0000
+ -- Marcin Owsiany <porridge@debian.org>  Thu, 20 Nov 2008 17:30:15 +0000
