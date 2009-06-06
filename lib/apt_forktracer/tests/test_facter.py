@@ -25,15 +25,21 @@ class TestFacterWithoutArgs(unittest.TestCase):
 	def testDistributorsIdReturnsSomething(self):
 		self.assert_(self.facter.distributors_id)
 
+class TestFacterWithLSBReleaseModuleArg(unittest.TestCase):
+	def setUp(self):
+		self.facter = Facter(lsb_release_module = 'apt_forktracer.testlib.fake_lsb_release')
+	def testDistributorsIdReturnsFakeDistribursId(self):
+		self.assertEquals(self.facter.distributors_id, 'fake_distributors_id')
+
 class TestFacterWithLSBReleaseArg(unittest.TestCase):
 	def setUp(self):
-		self.facter = Facter(lsb_release = 'echo Foobar')
+		self.facter = Facter(lsb_release_module = 'non.existant', lsb_release = 'echo Foobar')
 	def testDistributorsIdReturnsFoobar(self):
 		self.assertEquals(self.facter.distributors_id, 'Foobar')
 
 class TestFacterWithBrokenLSBReleaseArgAndValidFileArg(unittest.TestCase):
 	def setUp(self):
-		self.facter = Facter(lsb_release = 'false', file = 'test-data/lsb-release')
+		self.facter = Facter(lsb_release_module = 'non.existant', lsb_release = 'false', file = 'test-data/lsb-release')
 	def testDistributorsIdReturnsUbuntu(self):
 		self.assertEquals(self.facter.distributors_id, 'Ubuntu')
 

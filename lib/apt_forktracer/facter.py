@@ -15,17 +15,34 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import subprocess
 import re
+import subprocess
+import sys
 
 class Facter:
 	"""Reports some facts about the system. Currently just the distributor's id
 	(available through the distributors_id attribute).
 
+	Tries to import the lsb_release Python module, which should be fast and
+	provide most correct information.
+
+	If that fails, tries to run lsb_release(1) and read its output, which
+	should be functionally equivalent, but not as fast, since it requires a
+	fork/exec.
+
+	If that fails too, reads /etc/lsb-release directly as the last resort. This
+	might not be correct in all cases, as strictly speaking that file is not
+	required, but just provides a way to override values detected from the
+	system.
+
+	Throws an exception if all methods fail.
+
 	The optional attributes are mostly for testing purposes.
 	"""
-	def __init__(self, lsb_release = 'lsb_release --id --short', file = '/etc/lsb-release'):
-		self.distributors_id = self.get_distrib_id_from_command(lsb_release)
+	def __init__(self, lsb_release_module = 'lsb_release', lsb_release = 'lsb_release --id --short', file = '/etc/lsb-release'):
+		self.distributors_id = self.get_distrib_id_from_module(lsb_release_module)
+		if not self.distributors_id:
+			self.distributors_id = self.get_distrib_id_from_command(lsb_release)
 		if not self.distributors_id:
 			self.distributors_id = self.get_distrib_id_from_file('/etc/lsb-release')
 		if not self.distributors_id:
@@ -52,5 +69,15 @@ class Facter:
 			if p.returncode == 0:
 				return output.rstrip('\n')
 		except OSError:
+			pass
+
+	def get_distrib_id_from_module(self, module_name):
+		try:
+			__import__(module_name)
+			# we need to look up in sys.modules as __import__(name) only returns top-level module if name contains dots
+			module = sys.modules[module_name]
+			distinfo = module.get_distro_information()
+			return distinfo['ID']
+		except ImportError:
 			pass
  

@@ -1,3 +1,10 @@
+apt-forktracer (0.2) unstable; urgency=low
+
+  * Added the ability to read LSB distributor's ID by importing lsb_release
+    Python module, that has been recently provided by lsb-release package.
+
+ -- Marcin Owsiany <porridge@debian.org>  Sat, 06 Jun 2009 13:31:22 +0100
+
 apt-forktracer (0.1) unstable; urgency=low
 
   * Initial release (closes: #506151, the ITP bug)
