@@ -15,22 +15,25 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-import pmock
 import unittest
 
 from apt_forktracer.testlib import test_helper
 from apt_forktracer.config import Config
+from apt_forktracer.config_stanza import ConfigStanza
 
-class Test_Config(test_helper.TestCase):
+class Test_Config(test_helper.MoxTestCase):
 	def setUp(self):
+		super(Test_Config, self).setUp()
 		self.c = Config()
 	def test_addition_and_retrieval(self):
-		foo_stanza1 = self.mock()
-		foo_stanza1.stubs().get(pmock.eq('package')).will(pmock.return_value('foo'))
-		foo_stanza2 = self.mock()
-		foo_stanza2.stubs().get(pmock.eq('package')).will(pmock.return_value('foo'))
-		bar_stanza = self.mock()
-		bar_stanza.stubs().get(pmock.eq('package')).will(pmock.return_value('bar'))
+		foo_stanza1 = self.mox.CreateMock(ConfigStanza)
+		foo_stanza1.get('package').AndReturn('foo')
+		foo_stanza2 = self.mox.CreateMock(ConfigStanza)
+		foo_stanza2.get('package').AndReturn('foo')
+		bar_stanza = self.mox.CreateMock(ConfigStanza)
+		bar_stanza.get('package').AndReturn('bar')
+		self.mox.ReplayAll()
+
 		self.c.add(foo_stanza1)
 		self.c.add(foo_stanza2)
 		self.c.add(bar_stanza)
