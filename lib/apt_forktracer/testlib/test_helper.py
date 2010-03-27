@@ -184,3 +184,34 @@ class TestCase(pmock.MockTestCase):
 		if succeeded:
 			self.fail('%s did not fail with %s' % (method, exception_class))
 
+import mox
+
+class MoxTestCase(mox.MoxTestBase):
+	def mock(self):
+		"""This is here to mimic the old pmock infrastructure.
+
+		TODO: It should probably be removed at some point to force usage of
+		CreateMock(type).
+		"""
+		return self.mox.CreateMockAnything()
+
+	def functor(self, boolean_functor, desc = ''):
+		raise NotImplementedError()
+	def assertContains(self, haystack, needle):
+		raise NotImplementedError()
+	def assertNotContains(self, haystack, needle):
+		raise NotImplementedError()
+	def assertMatches(self, haystack, regex):
+		raise NotImplementedError()
+	def _create_mock_facter(self, id):
+		raise NotImplementedError()
+
+	def _create_mock_cache_adapter(self):
+		raise NotImplementedError()
+
+	def _create_mock_apt_pkg_module(self):
+		raise NotImplementedError()
+
+	def assertRaisesWithMessageContaining(self, exception_class, message_snippet, method, *args, **kwargs):
+		raise NotImplementedError()
+
