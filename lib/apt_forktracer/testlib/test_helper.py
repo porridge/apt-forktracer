@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -118,15 +118,30 @@ class DescriptionFunctorConstraint(FunctorConstraint):
 		else:
 			return "%s.functor(%s)" % (__name__, self._description)
 
-class TestCase(pmock.MockTestCase):
-	def functor(self, boolean_functor, desc = ''):
-		return DescriptionFunctorConstraint(boolean_functor, desc)
+class ForkTracerTestCaseBase(unittest.TestCase):
 	def assertContains(self, haystack, needle):
 		self.assert_(haystack.find(needle) >= 0, 'could not find %s in %s' % (needle, haystack))
 	def assertNotContains(self, haystack, needle):
 		self.assert_(haystack.find(needle) < 0, 'found "%s" in "%s"' % (needle, haystack))
 	def assertMatches(self, haystack, regex):
 		self.assert_(re.compile(regex).search(haystack), 'could not match "%s" against "%s"' % (haystack, regex))
+
+	def assertRaisesWithMessageContaining(self, exception_class, message_snippet, method, *args, **kwargs):
+		succeeded = False
+		try:
+			method(*args, **kwargs)
+			succeeded = True
+		except exception_class, e:
+			self.assertContains(e.message, message_snippet)
+		except Exception, e:
+			self.fail('%s failed with %s(%s) instead of %s' % (method, type(e), e.message, exception_class))
+		if succeeded:
+			self.fail('%s did not fail with %s' % (method, exception_class))
+
+class TestCase(pmock.MockTestCase, ForkTracerTestCaseBase):
+	def functor(self, boolean_functor, desc = ''):
+		return DescriptionFunctorConstraint(boolean_functor, desc)
+
 	def _create_mock_facter(self, id):
 		mock_facter = self.mock()
 		mock_facter.distributors_id = id
@@ -172,21 +187,9 @@ class TestCase(pmock.MockTestCase):
 		mock_apt_pkg_module.stubs().InitSystem()
 		return mock_apt_pkg_module
 
-	def assertRaisesWithMessageContaining(self, exception_class, message_snippet, method, *args, **kwargs):
-		succeeded = False
-		try:
-			method(*args, **kwargs)
-			succeeded = True
-		except exception_class, e:
-			self.assertContains(e.message, message_snippet)
-		except Exception, e:
-			self.fail('%s failed with %s(%s) instead of %s' % (method, type(e), e.message, exception_class))
-		if succeeded:
-			self.fail('%s did not fail with %s' % (method, exception_class))
-
 import mox
 
-class MoxTestCase(mox.MoxTestBase):
+class MoxTestCase(mox.MoxTestBase, ForkTracerTestCaseBase):
 	def mock(self):
 		"""This is here to mimic the old pmock infrastructure.
 
@@ -197,12 +200,7 @@ class MoxTestCase(mox.MoxTestBase):
 
 	def functor(self, boolean_functor, desc = ''):
 		raise NotImplementedError()
-	def assertContains(self, haystack, needle):
-		raise NotImplementedError()
-	def assertNotContains(self, haystack, needle):
-		raise NotImplementedError()
-	def assertMatches(self, haystack, regex):
-		raise NotImplementedError()
+
 	def _create_mock_facter(self, id):
 		raise NotImplementedError()
 
@@ -210,8 +208,5 @@ class MoxTestCase(mox.MoxTestBase):
 		raise NotImplementedError()
 
 	def _create_mock_apt_pkg_module(self):
-		raise NotImplementedError()
-
-	def assertRaisesWithMessageContaining(self, exception_class, message_snippet, method, *args, **kwargs):
 		raise NotImplementedError()
 
