@@ -19,9 +19,9 @@ class ConfigStanza:
 	"""Represents a single stanza in a configuration file, such as:
 
 	Package: foo
-	Accept-Origin: O1
-	Track-Origin: O2
-	Track-Version: 1.2.3
+	Accept-origin: O1
+	Track-origin: O2
+	Track-version: 1.2.3
 
 	Tags are on the left of the colons, and their values on the right.
 	"""

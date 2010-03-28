@@ -34,7 +34,7 @@ class Test_Package_And_Version_Reading(test_helper.MoxTestCase):
 		v1.VerStr = '1.2.3'
 		v1.append_package_file(FakePackageFile())
 		fpf = FakePackageFile()
-		fpf.NotAutomatic = 1
+		fpf.not_automatic = 1
 		v1.append_package_file(fpf)
 		v2 = FakeVersion()
 		v2.VerStr = '4.5.6'

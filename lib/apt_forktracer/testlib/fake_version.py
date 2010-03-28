@@ -18,7 +18,7 @@
 from apt_forktracer.testlib.fake_package_file import FakePackageFile
 
 class FakeVersion(object):
-	"""Pretends to be the pkgCache::Version object from apt_pkg. We cannot use
+	"""Pretends to be the pkgCache::version object from apt_pkg. We cannot use
 	the real one, because it is tied to the binary cache, which is difficult to
 	construct and control."""
 	def __init__(self, version_string = '1.2.3'):

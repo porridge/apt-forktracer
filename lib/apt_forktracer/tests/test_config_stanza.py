@@ -30,7 +30,7 @@ class Test_ConfigStanza(test_helper.MoxTestCase):
 	def test_all_attributes(self):
 		self.cs.set('Package', 'dpkg', 2)
 		self.assert_(not self.cs.is_empty())
-		self.cs.set('Accept-Origin', 'NonDebian Stuff', 3)
+		self.cs.set('Accept-origin', 'NonDebian Stuff', 3)
 		self.cs.set('Track-oriGIN', 'Debian', 4)
 		self.cs.set('track-version', '1.2.3', 5)
 		self.assertEquals(self.cs.get('package'), 'dpkg')
@@ -47,7 +47,7 @@ class Test_ConfigStanza(test_helper.MoxTestCase):
 	def test_wildcard_attributes(self):
 		self.cs.set('Package', 'dpkg', 2)
 		self.assert_(not self.cs.is_empty())
-		self.cs.set('Accept-Origin', '*', 3)
+		self.cs.set('Accept-origin', '*', 3)
 		self.cs.set('Track-oriGIN', '*', 4)
 		self.cs.set('track-version', '1.2.3', 5)
 		self.assertEquals(self.cs.get('accept-origin'), '*')

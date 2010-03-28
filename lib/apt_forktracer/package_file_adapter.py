@@ -21,14 +21,14 @@ class PackageFileAdapter:
 	TYPE_PACKAGE_FILE = 'Debian Package Index'
 	TYPE_DPKG_STATUS = 'Debian dpkg status file'
 	def __init__(self, apt_package_file):
-		self.name = apt_package_file.FileName
-		self.archive = apt_package_file.Archive
-		self.component = apt_package_file.Component
-		self.version = apt_package_file.Version
-		self.origin = apt_package_file.Origin
-		self.label = apt_package_file.Label
-		self.not_automatic = apt_package_file.NotAutomatic
-		self.index_type = apt_package_file.IndexType
+		self.name = apt_package_file.filename
+		self.archive = apt_package_file.archive
+		self.component = apt_package_file.component
+		self.version = apt_package_file.version
+		self.origin = apt_package_file.origin
+		self.label = apt_package_file.label
+		self.not_automatic = apt_package_file.not_automatic
+		self.index_type = apt_package_file.index_type
 
 	def is_official(self, facter):
 		"""Returns True if the package file's origin matches distributor's ID

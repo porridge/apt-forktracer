@@ -22,28 +22,28 @@ class FakePackageFile:
 	use the real one, because it is tied to the binary cache, which is
 	difficult to construct and control."""
 	def __init__(self, path = '/a/fake', type = 'normal', origin = 'Debian', archive = 'stable-proposed-updates'):
-		self.FileName = path
-		self.Archive = archive
-		self.Component = 'main'
+		self.filename = path
+		self.archive = archive
+		self.component = 'main'
 		# release version
-		self.Version = '1.0'
+		self.version = '1.0'
 		# provider of the archive
-		self.Origin = origin
+		self.origin = origin
 		# name of the distribution
-		self.Label = 'Debian'
+		self.label = 'Debian'
 		# apt will not consider taking packages unless told explicitly to do so
-		self.NotAutomatic = 0
+		self.not_automatic = 0
 		if type == 'normal':
-			self.IndexType = PackageFileAdapter.TYPE_PACKAGE_FILE
+			self.index_type = PackageFileAdapter.TYPE_PACKAGE_FILE
 		elif type == 'dpkg':
-			self.IndexType = PackageFileAdapter.TYPE_DPKG_STATUS
-			self.FileName = '/var/lib/dpkg/status'
-			self.Archive = 'now'
-			self.Component = ''
-			self.Version = ''
-			self.Origin = ''
-			self.Label = ''
+			self.index_type = PackageFileAdapter.TYPE_DPKG_STATUS
+			self.filename = '/var/lib/dpkg/status'
+			self.archive = 'now'
+			self.component = ''
+			self.version = ''
+			self.origin = ''
+			self.label = ''
 		else:
 			raise ValueError('Unknown type "%s"' % type)
 	def __str__(self):
-		return '<FakePackageFile(%s) path=%s a=%s c=%s v=%s o=%s l=%s %s>' % (self.IndexType, self.FileName, self.Archive, self.Component, self.Version, self.Origin, self.Label, self.NotAutomatic)
+		return '<FakePackageFile(%s) path=%s a=%s c=%s v=%s o=%s l=%s %s>' % (self.index_type, self.filename, self.archive, self.component, self.version, self.origin, self.label, self.not_automatic)

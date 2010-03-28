@@ -53,7 +53,7 @@ class TestBasePackageFileAdapter(BasePFATestWithOfficial):
 class TestBasePackageFileAdapterNonAuto(BasePFATestWithOfficial):
 	def setUpPF(self):
 		BasePFATest.setUpPF(self)
-		self.fake_package_file.NotAutomatic = 1
+		self.fake_package_file.not_automatic = 1
 	def testAttributes(self):
 		self.assertEquals(self.pfa.name, '/a/fake')
 		self.assertEquals(self.pfa.archive, 'stable-proposed-updates')

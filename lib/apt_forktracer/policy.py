@@ -73,9 +73,9 @@ class Policy:
 		"""Creates a stanza used when there is no configuration for a given
 		package.
 
-		Such Stanza has a matching Package tag, Accept-Origin that matches
-		anything, Track-Origin equal to the distributor ID according to facter,
-		and Track-Version equal to the candidate version (or the base of the
+		Such Stanza has a matching Package tag, Accept-origin that matches
+		anything, Track-origin equal to the distributor ID according to facter,
+		and Track-version equal to the candidate version (or the base of the
 		candidate version, if base argument is True).
 		"""
 		s = ConfigStanza()
