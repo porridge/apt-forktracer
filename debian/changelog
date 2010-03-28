@@ -1,3 +1,13 @@
+apt-forktracer (0.3) unstable; urgency=medium
+
+  * Updated unit tests to use mox instead of pmock, which is dead.
+  * Updated to use the so-called 0.8 API of python-apt. Setting urgency medium
+    to make sure it migrates to testing before release, getting rid of those
+    ugly deprecation warnings. (closes: #567137)
+  * Added a versioned Recommends on lsb-release. (closes: #532746)
+
+ -- Marcin Owsiany <porridge@debian.org>  Sun, 28 Mar 2010 18:35:33 +0100
+
 apt-forktracer (0.2) unstable; urgency=low
 
   * Added the ability to read LSB distributor's ID by importing lsb_release
