@@ -76,7 +76,7 @@ class Initialized_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 		self.apa.init()
 	def test_get_cache_adapters(self):
 		mock_reporter = self.mox.CreateMock(Reporter)
-		mock_progress = self.mox.CreateMockAnything()
+		mock_progress = self.struct()
 
 		mock_apt_cache = self.struct()
 		mock_cache_adapter = self.struct()

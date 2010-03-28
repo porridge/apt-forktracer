@@ -31,7 +31,7 @@ class DepCacheAdapter:
 		"""Returns a VersionAdapter object representing the candidate version
 		of the given PackageAdapter object pkg. Returns None if there is no
 		candidate version."""
-		apt_version = self.apt_dep_cache.GetCandidateVer(pkg.apt_package)
+		apt_version = self.apt_dep_cache.get_candidate_ver(pkg.apt_package)
 		if not apt_version:
 			return None
 		else:

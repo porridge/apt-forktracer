@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+import apt_pkg
 import unittest
 
 from apt_forktracer.testlib import test_helper
@@ -27,12 +28,12 @@ from apt_forktracer.testlib.fake_version import FakeVersion
 class TestDepCacheAdapter(test_helper.MoxTestCase):
 	def setUp(self):
 		super(TestDepCacheAdapter, self).setUp()
-		self.mock_depcache = self.mox.CreateMockAnything()
+		self.mock_depcache = self.mox.CreateMock(apt_pkg.DepCache)
 		self.a_fake_package = FakePackage()
 		self.package_adapter = PackageAdapter(self.a_fake_package)
 		self.dca = DepCacheAdapterFactory().create_depcache_adapter(self.mock_depcache)
 	def testNoCandidate(self):
-		self.mock_depcache.GetCandidateVer(self.a_fake_package).AndReturn(None)
+		self.mock_depcache.get_candidate_ver(self.a_fake_package).AndReturn(None)
 		self.mox.ReplayAll()
 
 		version_adapter = self.dca.get_candidate_version(self.package_adapter)
@@ -40,7 +41,7 @@ class TestDepCacheAdapter(test_helper.MoxTestCase):
 	def testWithCandidate(self):
 		fake_version = FakeVersion('1.2')
 		fake_version.append_package_file(FakePackageFile())
-		self.mock_depcache.GetCandidateVer(self.a_fake_package).AndReturn(fake_version)
+		self.mock_depcache.get_candidate_ver(self.a_fake_package).AndReturn(fake_version)
 		self.mox.ReplayAll()
 
 		version_adapter = self.dca.get_candidate_version(self.package_adapter)

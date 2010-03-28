@@ -93,10 +93,10 @@ class TestIntegraton(test_helper.MoxTestCase):
 			'libspf': libspf_local_version,
 			'libfoobar': libfoobar_local_version,
 			'git-core': git_backport_version}
-		self.apt_depcache.GetCandidateVer = lambda o: version_table[o.Name]
+		self.apt_depcache.get_candidate_ver = lambda o: version_table[o.Name]
 
 		self.reporter = self.mox.CreateMock(Reporter)
-		self.mock_progress = self.mox.CreateMockAnything()
+		self.mock_progress = self.struct()
 
 		self.apt_pkg = self._create_mock_apt_pkg_module()
 		test_helper.copy_state_constants(self.apt_pkg, apt_pkg)
