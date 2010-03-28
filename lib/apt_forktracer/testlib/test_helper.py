@@ -20,6 +20,7 @@ import re
 import unittest
 
 from apt_forktracer.testlib.fake_version import FakeVersion
+from apt_forktracer.facter import Facter
 
 def copy_state_constants(to_obj, from_obj):
 	to_obj.CurStateInstalled = from_obj.CurStateInstalled
@@ -202,11 +203,23 @@ class MoxTestCase(mox.MoxTestBase, ForkTracerTestCaseBase):
 		raise NotImplementedError()
 
 	def _create_mock_facter(self, id):
-		raise NotImplementedError()
+		mock_facter = self.mox.CreateMock(Facter)
+		mock_facter.distributors_id = id
+		return mock_facter
 
 	def _create_mock_cache_adapter(self):
 		raise NotImplementedError()
 
+	def struct(self, **kwargs):
+		class Struct:
+			def __init__(self, **entries): self.__dict__.update(entries)
+		return Struct(**kwargs)
+
 	def _create_mock_apt_pkg_module(self):
-		raise NotImplementedError()
+		mock_apt_pkg_module = self.struct()
+		comparator = Advanced_Version_Comparator()
+		mock_apt_pkg_module.VersionCompare = lambda x, y: comparator.compare(x, y)
+		mock_apt_pkg_module.InitConfig = lambda: None
+		mock_apt_pkg_module.InitSystem = lambda: None
+		return mock_apt_pkg_module
 
