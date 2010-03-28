@@ -8,7 +8,7 @@ XS-Python-Version: >= 2.4
 
 Package: apt-forktracer
 Architecture: all
-Depends: python-apt, ${python:Depends}, ${misc:Depends}
+Depends: python-apt (>= 0.7.93.2), ${python:Depends}, ${misc:Depends}
 XB-Python-Version: ${python:Versions}
 Description: a utility for tracking non-official package versions
  apt-forktracer tries to alleviate the problem that APT stops tracking official
