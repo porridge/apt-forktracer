@@ -100,7 +100,7 @@ class TestIntegraton(test_helper.MoxTestCase):
 
 		self.apt_pkg = self._create_mock_apt_pkg_module()
 		test_helper.copy_state_constants(self.apt_pkg, apt_pkg)
-		self.apt_pkg.GetCache(self.mock_progress).AndReturn(self.apt_cache)
+		self.apt_pkg.Cache(self.mock_progress).AndReturn(self.apt_cache)
 
 		self.facter = self.mox.CreateMock(Facter)
 		self.facter.distributors_id = 'Debian'

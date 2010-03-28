@@ -86,7 +86,7 @@ class Initialized_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 		mock_depcache_adapter = self.mox.CreateMock(DepCacheAdapter)
 		mock_depcache_adapter_factory = self.mox.CreateMock(DepCacheAdapterFactory)
 
-		self.mock_apt_pkg.GetCache(mock_progress).AndReturn(mock_apt_cache)
+		self.mock_apt_pkg.Cache(mock_progress).AndReturn(mock_apt_cache)
 		self.mock_apt_pkg.DepCache(mock_apt_cache).AndReturn(mock_apt_depcache)
 
 		mock_cache_adapter_factory.create_cache_adapter(mock_apt_cache, self.apa, mock_reporter).AndReturn(mock_cache_adapter)

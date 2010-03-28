@@ -16,7 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class NullProgress:
-	"""Makes libapt shut up when passed to GetCache()."""
+	"""Makes libapt shut up when passed to Cache()."""
 	def __init__(self):
 		pass
 	def update(self, something):
@@ -67,7 +67,7 @@ class AptPkgAdapter:
 		Throws an exception if called before init().
 		"""
 		self._assert_initialized()
-		self.apt_cache = self.apt_pkg.GetCache(progress)
+		self.apt_cache = self.apt_pkg.Cache(progress)
 		return cache_adapter_factory.create_cache_adapter(self.apt_cache, self, reporter)
 
 	def get_depcache_adapter(self, depcache_adapter_factory):
