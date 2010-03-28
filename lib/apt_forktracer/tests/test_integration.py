@@ -16,7 +16,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 import apt_pkg
-import pmock
+import mox
 import unittest
 
 from apt_forktracer.testlib import test_helper
@@ -32,9 +32,12 @@ from apt_forktracer.testlib.fake_package_file import FakePackageFile
 from apt_forktracer.testlib.fake_version import FakeVersion
 from apt_forktracer.package_adapter import PackageAdapterFactory
 from apt_forktracer.policy import Policy, VerbosePolicy
+from apt_forktracer.reporter import Reporter
+from apt_forktracer.facter import Facter
 
-class TestIntegraton(test_helper.TestCase):
+class TestIntegraton(test_helper.MoxTestCase):
 	def setUp(self):
+		super(TestIntegraton, self).setUp()
 		dpkg_status_file = FakePackageFile(type = 'dpkg')
 		debian_stable_package_file = FakePackageFile(archive = 'stable')
 		debian_proposed_updates_package_file = FakePackageFile(archive = 'stable-proposed-updates')
@@ -81,63 +84,74 @@ class TestIntegraton(test_helper.TestCase):
 		git.append_version(git_version)
 		git.append_version(git_backport_version, True)
 
-		self.apt_cache = self.mock()
+		self.apt_cache = self.struct()
 		self.apt_cache.Packages = [git, libc6, libspf, libfoobar]
 
-		self.apt_depcache = self.mock()
-		self.apt_depcache.stubs().GetCandidateVer(self.functor(lambda o: o.Name == 'libc6', desc = 'name == libc6')).will(pmock.return_value(libc6_updates_version))
-		self.apt_depcache.stubs().GetCandidateVer(self.functor(lambda o: o.Name == 'libspf', desc = 'name == libspf')).will(pmock.return_value(libspf_local_version))
-		self.apt_depcache.stubs().GetCandidateVer(self.functor(lambda o: o.Name == 'libfoobar', desc = 'name == libfoobar')).will(pmock.return_value(libfoobar_local_version))
-		self.apt_depcache.stubs().GetCandidateVer(self.functor(lambda o: o.Name == 'git-core', desc = 'name == git-core')).will(pmock.return_value(git_backport_version))
+		self.apt_depcache = self.struct()
+		version_table = {
+			'libc6': libc6_updates_version,
+			'libspf': libspf_local_version,
+			'libfoobar': libfoobar_local_version,
+			'git-core': git_backport_version}
+		self.apt_depcache.GetCandidateVer = lambda o: version_table[o.Name]
 
-		self.reporter = self.mock()
-		mock_progress = self.mock()
+		self.reporter = self.mox.CreateMock(Reporter)
+		self.mock_progress = self.mox.CreateMockAnything()
 
 		self.apt_pkg = self._create_mock_apt_pkg_module()
 		test_helper.copy_state_constants(self.apt_pkg, apt_pkg)
-		self.apt_pkg.expects(pmock.once()).GetCache(pmock.eq(mock_progress)).will(pmock.return_value(self.apt_cache))
+		self.apt_pkg.GetCache(self.mock_progress).AndReturn(self.apt_cache)
 
+		self.facter = self.mox.CreateMock(Facter)
+		self.facter.distributors_id = 'Debian'
+
+	def finishSetUp(self):
 		self.apt_pkg_adapter = AptPkgAdapter(self.apt_pkg)
 		self.apt_pkg_adapter.init()
 		cache_adapter_factory = CacheAdapterFactory()
 		self.package_adapter_factory = PackageAdapterFactory(DepCacheAdapter(self.apt_depcache))
-		self.apt_pkg_adapter.get_cache_adapter(cache_adapter_factory, self.reporter, mock_progress)
-
-		self.facter = self.mock()
-		self.facter.distributors_id = 'Debian'
+		self.cache_adapter = self.apt_pkg_adapter.get_cache_adapter(cache_adapter_factory, self.reporter, self.mock_progress)
 
 		config_finder = ConfigFinder('test-data/config')
 		config_parser = ConfigParser()
 		self.config = Config()
 		for path, file in config_finder:
 			config_parser.load(file, self.config)
-		self.cache_adapter = cache_adapter_factory.create_cache_adapter(self.apt_cache, self.apt_pkg_adapter, self.reporter)
 
 	def test_verbose(self):
+		# lib6 - never
+		self.reporter.report(mox.Func(lambda o: o.package_name == 'libspf')).InAnyOrder()
+		self.reporter.report(mox.Func(lambda o: o.package_name == 'libfoobar')).InAnyOrder()
+		self.reporter.report(mox.Func(lambda o: o.package_name == 'git-core')).InAnyOrder()
+		self.mox.ReplayAll()
+
+		self.finishSetUp()
 		checker = Checker(self.facter, True)
 		policy = VerbosePolicy()
-		self.reporter.expects(pmock.never()).report(self.functor(lambda o: o.package_name == 'libc6', desc = 'name == libc6'))
-		self.reporter.expects(pmock.once()).report(self.functor(lambda o: o.package_name == 'libspf', desc = 'name == libspf'))
-		self.reporter.expects(pmock.once()).report(self.functor(lambda o: o.package_name == 'libfoobar', desc = 'name == libfoobar'))
-		self.reporter.expects(pmock.once()).report(self.functor(lambda o: o.package_name == 'git-core', desc = 'name == git-core'))
 		self.cache_adapter.run(checker, policy, self.package_adapter_factory)
 
 	def test_non_verbose_empty_config(self):
+		# libc6 - never
+		self.reporter.report(mox.Func(lambda o: o.package_name == 'libspf')).InAnyOrder()
+		# libfoobar - never
+		self.reporter.report(mox.Func(lambda o: o.package_name == 'git-core')).InAnyOrder()
+		self.mox.ReplayAll()
+
+		self.finishSetUp()
 		checker = Checker(self.facter)
 		policy = Policy(self.apt_pkg_adapter, self.facter, Config())
-		self.reporter.expects(pmock.never()).report(self.functor(lambda o: o.package_name == 'libc6', desc = 'name == libc6'))
-		self.reporter.expects(pmock.once()).report(self.functor(lambda o: o.package_name == 'libspf', desc = 'name == libspf'))
-		self.reporter.expects(pmock.never()).report(self.functor(lambda o: o.package_name == 'libfoobar', desc = 'name == libfoobar'))
-		self.reporter.expects(pmock.once()).report(self.functor(lambda o: o.package_name == 'git-core', desc = 'name == git-core'))
 		self.cache_adapter.run(checker, policy, self.package_adapter_factory)
 
 	def test_non_verbose(self):
+		# libc6 - never
+		self.reporter.report(mox.Func(lambda o: o.package_name == 'libspf'))
+		# libfoobar - never
+		# git-core - never
+		self.mox.ReplayAll()
+
+		self.finishSetUp()
 		checker = Checker(self.facter)
 		policy = Policy(self.apt_pkg_adapter, self.facter, self.config)
-		self.reporter.expects(pmock.never()).report(self.functor(lambda o: o.package_name == 'libc6', desc = 'name == libc6'))
-		self.reporter.expects(pmock.once()).report(self.functor(lambda o: o.package_name == 'libspf', desc = 'name == libspf'))
-		self.reporter.expects(pmock.never()).report(self.functor(lambda o: o.package_name == 'libfoobar', desc = 'name == libfoobar'))
-		self.reporter.expects(pmock.never()).report(self.functor(lambda o: o.package_name == 'git-core', desc = 'name == git-core'))
 		self.cache_adapter.run(checker, policy, self.package_adapter_factory)
 
 if __name__ == '__main__':
