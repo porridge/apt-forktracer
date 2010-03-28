@@ -41,13 +41,13 @@ class TestFacterWithBrokenLSBReleaseArgAndValidFileArg(unittest.TestCase):
 	def setUp(self):
 		self.facter = Facter(lsb_release_module = 'non.existant', lsb_release = 'false', file = 'test-data/lsb-release')
 	def testDistributorsIdReturnsUbuntu(self):
-		self.assertEquals(self.facter.distributors_id, 'Ubuntu')
+		self.assertEquals(self.facter.distributors_id, 'Ubuntu-in-test-data')
 
 class TestFacterReadFirstWord(unittest.TestCase):
 	def setUp(self):
 		self.facter = Facter()
 	def testUsualIssueFile(self):
-		self.assertEquals(self.facter.get_distrib_id_from_file('test-data/lsb-release'), 'Ubuntu')
+		self.assertEquals(self.facter.get_distrib_id_from_file('test-data/lsb-release'), 'Ubuntu-in-test-data')
 	def testEmptyFile(self):
 		self.assertEquals(self.facter.get_distrib_id_from_file('test-data/empty'), None)
 	def testMissingFile(self):

@@ -44,7 +44,7 @@ class Facter:
 		if not self.distributors_id:
 			self.distributors_id = self.get_distrib_id_from_command(lsb_release)
 		if not self.distributors_id:
-			self.distributors_id = self.get_distrib_id_from_file('/etc/lsb-release')
+			self.distributors_id = self.get_distrib_id_from_file(file)
 		if not self.distributors_id:
 			raise RuntimeError('Could not obtain distributors id from lsb_release')
 

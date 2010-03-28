@@ -1,5 +1,5 @@
 blah blah
 DISTRIB_WHATEVER=Something
 blah
-DISTRIB_ID=Ubuntu
+DISTRIB_ID=Ubuntu-in-test-data
 DISTRIB_RELEASE=7.10
