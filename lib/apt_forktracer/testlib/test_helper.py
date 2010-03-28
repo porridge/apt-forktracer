@@ -140,7 +140,7 @@ class MoxTestCase(mox.MoxTestBase):
 		mock_apt_pkg_module = self.mox.CreateMockAnything()
 		comparator = Advanced_Version_Comparator()
 		mock_apt_pkg_module.VersionCompare = lambda x, y: comparator.compare(x, y)
-		mock_apt_pkg_module.InitConfig = lambda: None
-		mock_apt_pkg_module.InitSystem = lambda: None
+		mock_apt_pkg_module.init_config = lambda: None
+		mock_apt_pkg_module.init_system = lambda: None
 		return mock_apt_pkg_module
 

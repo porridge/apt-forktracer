@@ -51,8 +51,8 @@ class AptPkgAdapter:
 
 	def init(self):
 		"""Initializes libapt. Must be called before any other method."""
-		self.apt_pkg.InitConfig()
-		self.apt_pkg.InitSystem()
+		self.apt_pkg.init_config()
+		self.apt_pkg.init_system()
 		self.inited = True
 
 	def _assert_initialized(self):

@@ -70,8 +70,8 @@ class Uninitialized_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 
 class Initialized_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 	def set_up_mock_apt_pkg(self):
-		self.mock_apt_pkg.InitConfig()
-		self.mock_apt_pkg.InitSystem()
+		self.mock_apt_pkg.init_config()
+		self.mock_apt_pkg.init_system()
 	def set_up_apa(self):
 		self.apa.init()
 	def test_get_cache_adapters(self):
