@@ -15,18 +15,20 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-import pmock
+import mox
 import unittest
 
 from apt_forktracer.testlib import test_helper
 from apt_forktracer.testlib.fake_package import FakePackage
 from apt_forktracer.testlib.fake_package_file import FakePackageFile
 from apt_forktracer.testlib.fake_version import FakeVersion
+from apt_forktracer.depcache_adapter import DepCacheAdapter
 from apt_forktracer.package_adapter import PackageAdapter,PackageAdapterFactory
 from apt_forktracer.version_adapter import VersionAdapter
 
-class Test_Package_And_Version_Reading(test_helper.TestCase):
+class Test_Package_And_Version_Reading(test_helper.MoxTestCase):
 	def setUp(self):
+		super(Test_Package_And_Version_Reading, self).setUp()
 		self.fake = FakePackage()
 		v1 = FakeVersion()
 		v1.VerStr = '1.2.3'
@@ -39,8 +41,9 @@ class Test_Package_And_Version_Reading(test_helper.TestCase):
 		self.fake.VersionList.append(v1)
 		self.fake.VersionList.append(v2)
 		self.fake.CurrentVer = v1
-		self.set_up_package_adapter()
-	def set_up_package_adapter(self):
+		self.set_up_package_adapter_and_replay_all()
+	def set_up_package_adapter_and_replay_all(self):
+		self.mox.ReplayAll()
 		self.p = PackageAdapter(self.fake)
 	def testPackageAndVersionsReadCorrectly(self):
 		self.assertEquals(self.p.name, 'afake')
@@ -75,16 +78,20 @@ class Test_Package_And_Version_Reading(test_helper.TestCase):
 		self.assertContains(vpfs2, 'NONAUTO')
 
 class Test_With_Factory_Creation(Test_Package_And_Version_Reading):
-	def set_up_package_adapter(self):
+	def set_up_package_adapter_and_replay_all(self):
+		self.mox.ReplayAll()
 		self.p = PackageAdapterFactory().create_package_adapter(self.fake)
 
 class Test_With_Factory_Creation_With_Candidate(Test_Package_And_Version_Reading):
-	def set_up_package_adapter(self):
-		self.mock_depcache_adapter = self.mock()
-		v = VersionAdapter(FakeVersion._create('1.2.4', []))
-		self.mock_depcache_adapter.expects(pmock.once()).get_candidate_version(pmock.functor(lambda pa: pa.name == 'afake')).will(pmock.return_value(v))
-		self.p = PackageAdapterFactory(self.mock_depcache_adapter).create_package_adapter(self.fake)
-		self.assertEquals(self.p.candidate_version, v)
+	def set_up_package_adapter_and_replay_all(self):
+		mock_depcache_adapter = self.mox.CreateMock(DepCacheAdapter)
+		self.va = VersionAdapter(FakeVersion._create('1.2.4', []))
+		mock_depcache_adapter.get_candidate_version(mox.Func(lambda pa: pa.name == 'afake')).AndReturn(self.va)
+		self.mox.ReplayAll()
+
+		self.p = PackageAdapterFactory(mock_depcache_adapter).create_package_adapter(self.fake)
+	def test_candidate_version(self):
+		self.assertEquals(self.p.candidate_version, self.va)
 		s = str(self.p)
 		self.assertMatches(s, 'v=<.*1.2.3.*->.*<.*1.2.4')
 
