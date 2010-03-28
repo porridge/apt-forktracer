@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-import pmock
 import unittest
 
 from apt_forktracer.testlib import test_helper
@@ -25,20 +24,25 @@ from apt_forktracer.testlib.fake_package import FakePackage
 from apt_forktracer.testlib.fake_package_file import FakePackageFile
 from apt_forktracer.testlib.fake_version import FakeVersion
 
-class TestDepCacheAdapter(test_helper.TestCase):
+class TestDepCacheAdapter(test_helper.MoxTestCase):
 	def setUp(self):
-		self.mock_depcache = self.mock()
+		super(TestDepCacheAdapter, self).setUp()
+		self.mock_depcache = self.mox.CreateMockAnything()
 		self.a_fake_package = FakePackage()
 		self.package_adapter = PackageAdapter(self.a_fake_package)
 		self.dca = DepCacheAdapterFactory().create_depcache_adapter(self.mock_depcache)
 	def testNoCandidate(self):
-		self.mock_depcache.expects(pmock.once()).GetCandidateVer(pmock.eq(self.a_fake_package)).will(pmock.return_value(None))
+		self.mock_depcache.GetCandidateVer(self.a_fake_package).AndReturn(None)
+		self.mox.ReplayAll()
+
 		version_adapter = self.dca.get_candidate_version(self.package_adapter)
 		self.assertEquals(version_adapter, None)
 	def testWithCandidate(self):
 		fake_version = FakeVersion('1.2')
 		fake_version.append_package_file(FakePackageFile())
-		self.mock_depcache.expects(pmock.once()).GetCandidateVer(pmock.eq(self.a_fake_package)).will(pmock.return_value(fake_version))
+		self.mock_depcache.GetCandidateVer(self.a_fake_package).AndReturn(fake_version)
+		self.mox.ReplayAll()
+
 		version_adapter = self.dca.get_candidate_version(self.package_adapter)
 		self.assertEquals(version_adapter.string, '1.2')
 
