@@ -60,16 +60,10 @@ class Test_Base_Cache_Adapter(test_helper.MoxTestCase):
 		self.assertContains(str(self.ca), 'CacheAdapter')
 	def test_states_copied(self):
 		self.mox.ReplayAll()
-		self.assertEquals(self.ca.states_we_check[0], apt_pkg.CurStateInstalled)
-		self.assertEquals(self.ca.states_we_check[1], apt_pkg.CurStateHalfConfigured)
-		self.assertEquals(self.ca.states_we_check[2], apt_pkg.CurStateHalfInstalled)
-		self.assertEquals(self.ca.states_we_check[3], apt_pkg.CurStateUnPacked)
-
-class Test_Cache_Adapter_With_Old_Apt_Pkg_Class(Test_Base_Cache_Adapter):
-	def set_up_apt_pkg(self):
-		class Fake_Apt_Pkg_Class_Without_States:
-			pass
-		self.fake_apt_pkg_module = Fake_Apt_Pkg_Class_Without_States()
+		self.assertEquals(self.ca.states_we_check[0], apt_pkg.CURSTATE_INSTALLED)
+		self.assertEquals(self.ca.states_we_check[1], apt_pkg.CURSTATE_HALF_CONFIGURED)
+		self.assertEquals(self.ca.states_we_check[2], apt_pkg.CURSTATE_HALF_INSTALLED)
+		self.assertEquals(self.ca.states_we_check[3], apt_pkg.CURSTATE_UNPACKED)
 
 class Test_Empty_Cache_Adapter(Test_Base_Cache_Adapter):
 	def test_stringification_with_empty_cache(self):
@@ -113,21 +107,21 @@ class Test_Two_Installed_Packages_Cache_Adapter(Test_Base_Cache_Adapter):
 
 class Test_One_Not_Installed_Package_Cache_Adapter(Test_Base_Cache_Adapter):
 	def set_up_fake_cache_tweak(self):
-		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CurStateNotInstalled))
+		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CURSTATE_NOT_INSTALLED))
 	def test_invokes_checker_zero_times_with_cache_containing_one_not_installed_package(self):
 		self.mox.ReplayAll()
 		self.ca.run(self.mock_checker, self.mock_policy, self.package_adapter_factory)
 
 class Test_One_Conffiles_Package_Cache_Adapter(Test_Base_Cache_Adapter):
 	def set_up_fake_cache_tweak(self):
-		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CurStateConfigFiles))
+		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CURSTATE_CONFIG_FILES))
 	def test_invokes_checker_zero_times_with_cache_containing_one_package_with_just_config_files(self):
 		self.mox.ReplayAll()
 		self.ca.run(self.mock_checker, self.mock_policy, self.package_adapter_factory)
 
 class Test_One_Half_Configured_Package_Cache_Adapter(Test_Base_Cache_Adapter):
 	def set_up_fake_cache_tweak(self):
-		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CurStateHalfConfigured))
+		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CURSTATE_HALF_CONFIGURED))
 	def test_invokes_checker_one_time_with_cache_containing_one_package_half_configured(self):
 		self.mock_depcache_adapter.get_candidate_version(mox.Func(lambda o: o.name == 'afake')).AndReturn(self.version_adapter)
 		self.mock_checker.check(mox.IgnoreArg()).AndReturn(self.mock_status)
@@ -138,7 +132,7 @@ class Test_One_Half_Configured_Package_Cache_Adapter(Test_Base_Cache_Adapter):
 
 class Test_One_Half_Installed_Package_Cache_Adapter(Test_Base_Cache_Adapter):
 	def set_up_fake_cache_tweak(self):
-		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CurStateHalfInstalled))
+		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CURSTATE_HALF_INSTALLED))
 	def test_invokes_checker_one_time_with_cache_containing_one_package_half_installed(self):
 		self.mock_depcache_adapter.get_candidate_version(mox.Func(lambda o: o.name == 'afake')).AndReturn(self.version_adapter)
 		self.mock_checker.check(mox.IgnoreArg()).AndReturn(None)
@@ -147,7 +141,7 @@ class Test_One_Half_Installed_Package_Cache_Adapter(Test_Base_Cache_Adapter):
 
 class Test_One_Unpacked_Package_Cache_Adapter(Test_Base_Cache_Adapter):
 	def set_up_fake_cache_tweak(self):
-		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CurStateUnPacked))
+		self.fake_cache.append_package(FakePackage(current_state = apt_pkg.CURSTATE_UNPACKED))
 	def test_invokes_checker_one_time_with_cache_containing_one_package_half_configured(self):
 		self.mock_depcache_adapter.get_candidate_version(mox.Func(lambda o: o.name == 'afake')).AndReturn(self.version_adapter)
 		self.mock_checker.check(mox.Func(lambda o:o.name == 'afake' and o.candidate_version.string == '1.2.3')).AndReturn(self.mock_status)

@@ -21,7 +21,7 @@ class FakePackage:
 	"""Pretends to be the pkgCache::Package object from apt_pkg. We cannot use
 	the real one, because it is tied to the binary cache, which is difficult to
 	construct and control."""
-	def __init__(self, current_state = apt_pkg.CurStateInstalled, name = 'afake'):
+	def __init__(self, current_state = apt_pkg.CURSTATE_INSTALLED, name = 'afake'):
 		self.Name = name
 		self.VersionList = []
 		self.CurrentState = current_state

@@ -43,21 +43,15 @@ class Base_Apt_Pkg_Adapter_Test(test_helper.MoxTestCase):
 	def set_up_apa(self):
 		pass
 
-class Older_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
-	def create_mock_apt_pkg(self):
-		class Fake_Apt_Pkg_Class_Without_States:
-			pass
-		self.mock_apt_pkg = Fake_Apt_Pkg_Class_Without_States()
-	def test_states(self):
-		self.mox.ReplayAll()
-		self.assertEquals(self.apa.state_installed, apt_pkg.CurStateInstalled)
-		self.assertEquals(self.apa.state_half_installed, apt_pkg.CurStateHalfInstalled)
-		self.assertEquals(self.apa.state_half_configured, apt_pkg.CurStateHalfConfigured)
-		self.assertEquals(self.apa.state_unpacked, apt_pkg.CurStateUnPacked)
-
-class Newer_Apt_Pkg_Adapter_Test(Older_Apt_Pkg_Adapter_Test):
+class Newer_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 	def create_mock_apt_pkg(self):
 		self.mock_apt_pkg = apt_pkg
+	def test_states(self):
+		self.mox.ReplayAll()
+		self.assertEquals(self.apa.state_installed, apt_pkg.CURSTATE_INSTALLED)
+		self.assertEquals(self.apa.state_half_installed, apt_pkg.CURSTATE_HALF_INSTALLED)
+		self.assertEquals(self.apa.state_half_configured, apt_pkg.CURSTATE_HALF_CONFIGURED)
+		self.assertEquals(self.apa.state_unpacked, apt_pkg.CURSTATE_UNPACKED)
 
 class Uninitialized_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 	def test_methods_fail_on_uninitialized_adapter(self):

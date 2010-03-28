@@ -35,17 +35,10 @@ class AptPkgAdapter:
 	def __init__(self, apt_pkg):
 		"""apt_pkg is the imported libapt module to wrap."""
 		self.apt_pkg = apt_pkg
-		# python-apt << 0.6.22 does not have the CurState* attributes
-		if hasattr(apt_pkg, "CurStateInstalled"):
-			self.state_installed = apt_pkg.CurStateInstalled
-			self.state_half_installed = apt_pkg.CurStateHalfInstalled
-			self.state_half_configured = apt_pkg.CurStateHalfConfigured
-			self.state_unpacked = apt_pkg.CurStateUnPacked
-		else:
-			self.state_installed = 6
-			self.state_half_installed = 4
-			self.state_half_configured = 2
-			self.state_unpacked = 1
+		self.state_installed = apt_pkg.CURSTATE_INSTALLED
+		self.state_half_installed = apt_pkg.CURSTATE_HALF_INSTALLED
+		self.state_half_configured = apt_pkg.CURSTATE_HALF_CONFIGURED
+		self.state_unpacked = apt_pkg.CURSTATE_UNPACKED
 		self.apt_cache = None
 		self.inited = False
 

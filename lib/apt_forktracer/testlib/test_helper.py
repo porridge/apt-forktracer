@@ -21,10 +21,10 @@ import re
 from apt_forktracer.facter import Facter
 
 def copy_state_constants(to_obj, from_obj):
-	to_obj.CurStateInstalled = from_obj.CurStateInstalled
-	to_obj.CurStateHalfConfigured = from_obj.CurStateHalfConfigured
-	to_obj.CurStateHalfInstalled = from_obj.CurStateHalfInstalled
-	to_obj.CurStateUnPacked = from_obj.CurStateUnPacked
+	to_obj.CURSTATE_INSTALLED = from_obj.CURSTATE_INSTALLED
+	to_obj.CURSTATE_HALF_CONFIGURED = from_obj.CURSTATE_HALF_CONFIGURED
+	to_obj.CURSTATE_HALF_INSTALLED = from_obj.CURSTATE_HALF_INSTALLED
+	to_obj.CURSTATE_UNPACKED = from_obj.CURSTATE_UNPACKED
 
 class Advanced_Version_Comparator:
 	def __init__(self):
