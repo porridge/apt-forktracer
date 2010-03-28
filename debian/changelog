@@ -7,8 +7,9 @@ apt-forktracer (0.3) unstable; urgency=medium
   * Added a versioned Recommends on lsb-release. (closes: #532746)
   * Bumped standards-version to 3.8.4 (no changes needed).
   * Bumped DH compat version to 7 (as well as DH build-dep version).
+  * Added a debian/source/format file with "3.0 (native)"
 
- -- Marcin Owsiany <porridge@debian.org>  Sun, 28 Mar 2010 21:17:15 +0100
+ -- Marcin Owsiany <porridge@debian.org>  Sun, 28 Mar 2010 21:20:58 +0100
 
 apt-forktracer (0.2) unstable; urgency=low
 
