@@ -22,16 +22,16 @@ class FakePackage:
 	the real one, because it is tied to the binary cache, which is difficult to
 	construct and control."""
 	def __init__(self, current_state = apt_pkg.CURSTATE_INSTALLED, name = 'afake'):
-		self.Name = name
-		self.VersionList = []
+		self.name = name
+		self.version_list = []
 		self.current_state = current_state
 		self.current_ver = None
 	def append_version(self, version, current = False):
-		self.VersionList.append(version)
+		self.version_list.append(version)
 		if current:
 			self.current_ver = version
 	def __str__(self):
 		vers = ''
-		for v in self.VersionList:
+		for v in self.version_list:
 			vers += str(v) + ','
-		return '<FakePackage(%s) %s v=%s [%s]>' % (self.current_state, self.Name, str(self.current_ver), vers)
+		return '<FakePackage(%s) %s v=%s [%s]>' % (self.current_state, self.name, str(self.current_ver), vers)

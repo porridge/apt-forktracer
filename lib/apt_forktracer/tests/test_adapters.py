@@ -31,15 +31,15 @@ class Test_Package_And_Version_Reading(test_helper.MoxTestCase):
 		super(Test_Package_And_Version_Reading, self).setUp()
 		self.fake = FakePackage()
 		v1 = FakeVersion()
-		v1.VerStr = '1.2.3'
+		v1.ver_str = '1.2.3'
 		v1.append_package_file(FakePackageFile())
 		fpf = FakePackageFile()
 		fpf.not_automatic = 1
 		v1.append_package_file(fpf)
 		v2 = FakeVersion()
-		v2.VerStr = '4.5.6'
-		self.fake.VersionList.append(v1)
-		self.fake.VersionList.append(v2)
+		v2.ver_str = '4.5.6'
+		self.fake.version_list.append(v1)
+		self.fake.version_list.append(v2)
 		self.fake.current_ver = v1
 		self.set_up_package_adapter_and_replay_all()
 	def set_up_package_adapter_and_replay_all(self):

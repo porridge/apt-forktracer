@@ -21,8 +21,8 @@ class VersionAdapter:
 	"""Mirror of the aptCache::version libapt class. See AptPkgAdapter for an
 	explanation of why this is needed."""
 	def __init__(self, apt_version):
-		self.string = apt_version.VerStr
-		self.files = [PackageFileAdapter(pf[0]) for pf in apt_version.FileList]
+		self.string = apt_version.ver_str
+		self.files = [PackageFileAdapter(pf[0]) for pf in apt_version.file_list]
 
 	def is_officially_available(self, facter):
 		"""Returns True if any of the files considers itself official."""

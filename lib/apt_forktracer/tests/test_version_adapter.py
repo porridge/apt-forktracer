@@ -46,8 +46,8 @@ class TestVersionOfficiallyAvailable(test_helper.MoxTestCase):
 	def setUp(self):
 		super(TestVersionOfficiallyAvailable, self).setUp()
 		self.mock_apt_version = self.struct()
-		self.mock_apt_version.VerStr = '1.2.3'
-		self.mock_apt_version.FileList = [(FakePackageFile(type = 'dpkg'), 1)]
+		self.mock_apt_version.ver_str = '1.2.3'
+		self.mock_apt_version.file_list = [(FakePackageFile(type = 'dpkg'), 1)]
 		self.mock_facter = self._create_mock_facter('Debian')
 	def assertVersionIsOfficiallyAvailable(self):
 		self.assert_(VersionAdapter(self.mock_apt_version).is_officially_available(self.mock_facter))
@@ -56,14 +56,14 @@ class TestVersionOfficiallyAvailable(test_helper.MoxTestCase):
 	def testVersionNotAvailableApartFromInstalled(self):
 		self.assertVersionIsNotOfficiallyAvailable()
 	def testVersionAvailableFromUnofficialPackageFile(self):
-		self.mock_apt_version.FileList.append((FakePackageFile(type = 'normal', origin = 'Unofficial'), 2))
+		self.mock_apt_version.file_list.append((FakePackageFile(type = 'normal', origin = 'Unofficial'), 2))
 		self.assertVersionIsNotOfficiallyAvailable()
 	def testVersionAvailableFromOfficialPackageFile(self):
-		self.mock_apt_version.FileList.append((FakePackageFile(type = 'normal', origin = 'Debian'), 2))
+		self.mock_apt_version.file_list.append((FakePackageFile(type = 'normal', origin = 'Debian'), 2))
 		self.assertVersionIsOfficiallyAvailable()
 	def testVersionAvailableFromBothOfficialAndUnofficialPackageFiles(self):
-		self.mock_apt_version.FileList.append((FakePackageFile(type = 'normal', origin = 'Debian'), 2))
-		self.mock_apt_version.FileList.append((FakePackageFile(type = 'normal', origin = 'Unofficial'), 1))
+		self.mock_apt_version.file_list.append((FakePackageFile(type = 'normal', origin = 'Debian'), 2))
+		self.mock_apt_version.file_list.append((FakePackageFile(type = 'normal', origin = 'Unofficial'), 1))
 		self.assertVersionIsOfficiallyAvailable()
 
 class TestZeroFileVersionAdapter(TestBaseVersionAdapter):

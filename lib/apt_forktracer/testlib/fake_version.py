@@ -22,16 +22,16 @@ class FakeVersion(object):
 	the real one, because it is tied to the binary cache, which is difficult to
 	construct and control."""
 	def __init__(self, version_string = '1.2.3'):
-		self.VerStr = version_string
-		self.FileList = []
+		self.ver_str = version_string
+		self.file_list = []
 	def append_package_file(self, package_file):
 		tuple = (package_file,1)
-		self.FileList.append(tuple)
+		self.file_list.append(tuple)
 	def __str__(self):
 		files = ''
-		for f in self.FileList:
+		for f in self.file_list:
 			files += '(%s,%d),' % (str(f[0]), f[1])
-		return '<FakeVersion %s [%s]>' % (self.VerStr, files)
+		return '<FakeVersion %s [%s]>' % (self.ver_str, files)
 	def _create(string, origins):
 		"""Factory method."""
 		fv = FakeVersion(string)

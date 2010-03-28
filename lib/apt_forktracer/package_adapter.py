@@ -40,13 +40,13 @@ class PackageAdapter:
 	"""
 	def __init__(self, apt_package):
 		self.apt_package = apt_package
-		self.name = apt_package.Name
+		self.name = apt_package.name
 		if apt_package.current_ver:
 			self.current_version = VersionAdapter(apt_package.current_ver)
 		else:
 			self.current_version = None
 		self.candidate_version = None
-		self.versions = [VersionAdapter(v) for v in apt_package.VersionList]
+		self.versions = [VersionAdapter(v) for v in apt_package.version_list]
 
 	def get_status(self, facter):
 		"""Creates a new Status object based on this one, given a Facter."""

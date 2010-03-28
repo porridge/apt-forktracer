@@ -85,7 +85,7 @@ class AptPkgAdapter:
 		self._assert_initialized()
 		if version_a == None or version_b == None:
 			raise ValueError('cannot compare a None version string')
-		return self.apt_pkg.VersionCompare(version_a, version_b)
+		return self.apt_pkg.version_compare(version_a, version_b)
 
 	def version_sort(self, versions):
 		"""Sorts the given versions list of VersionAdapters in situ and also
