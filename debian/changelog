@@ -6,8 +6,9 @@ apt-forktracer (0.3) unstable; urgency=medium
     ugly deprecation warnings. (closes: #567137)
   * Added a versioned Recommends on lsb-release. (closes: #532746)
   * Bumped standards-version to 3.8.4 (no changes needed).
+  * Bumped DH compat version to 7 (no changes needed).
 
- -- Marcin Owsiany <porridge@debian.org>  Sun, 28 Mar 2010 21:08:41 +0100
+ -- Marcin Owsiany <porridge@debian.org>  Sun, 28 Mar 2010 21:14:04 +0100
 
 apt-forktracer (0.2) unstable; urgency=low
 
