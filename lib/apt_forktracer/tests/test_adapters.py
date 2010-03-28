@@ -40,7 +40,7 @@ class Test_Package_And_Version_Reading(test_helper.MoxTestCase):
 		v2.VerStr = '4.5.6'
 		self.fake.VersionList.append(v1)
 		self.fake.VersionList.append(v2)
-		self.fake.CurrentVer = v1
+		self.fake.current_ver = v1
 		self.set_up_package_adapter_and_replay_all()
 	def set_up_package_adapter_and_replay_all(self):
 		self.mox.ReplayAll()

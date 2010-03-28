@@ -28,7 +28,7 @@ class _CacheAdapter:
 		self.states_we_check = [ apt_pkg_adapter.state_installed, apt_pkg_adapter.state_half_configured, apt_pkg_adapter.state_half_installed, apt_pkg_adapter.state_unpacked ]
 	def run(self, checker, policy, package_adapter_factory):
 		for package in self.apt_cache.packages:
-			if package.CurrentState not in self.states_we_check:
+			if package.current_state not in self.states_we_check:
 				continue
 			pa = package_adapter_factory.create_package_adapter(package)
 			status = checker.check(pa)

@@ -41,8 +41,8 @@ class PackageAdapter:
 	def __init__(self, apt_package):
 		self.apt_package = apt_package
 		self.name = apt_package.Name
-		if apt_package.CurrentVer:
-			self.current_version = VersionAdapter(apt_package.CurrentVer)
+		if apt_package.current_ver:
+			self.current_version = VersionAdapter(apt_package.current_ver)
 		else:
 			self.current_version = None
 		self.candidate_version = None

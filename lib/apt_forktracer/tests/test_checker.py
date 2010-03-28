@@ -89,7 +89,7 @@ class GeneralNonVerboseCheckerCheckTest(CheckerCheckTestCase):
 		pa.candidate_version = pa.current_version
 		self.assertEquals(self.checker.check(pa), None)
 	def test_returns_a_status_object_on_package_with_same_current_and_candidate_both_only_locally(self):
-		self.fp.CurrentVer = FakeVersion._create('1.2.3', ['dpkg'])
+		self.fp.current_ver = FakeVersion._create('1.2.3', ['dpkg'])
 		pa = PackageAdapter(self.fp)
 		pa.candidate_version = pa.current_version
 		self.assert_(self.checker.check(pa) != None)
@@ -104,7 +104,7 @@ class GeneralNonVerboseCheckerCheckTest(CheckerCheckTestCase):
 		self.assertEquals(status.installed_version.string, '1.2.3')
 		self.assertEquals(status.candidate_version.string, '1.2.5')
 	def test_package_without_candidate_version_and_current_unofficial(self):
-		self.fp.CurrentVer = FakeVersion._create('1.2.2', ['NotDebian'])
+		self.fp.current_ver = FakeVersion._create('1.2.2', ['NotDebian'])
 		pa = PackageAdapter(self.fp)
 		pa.candidate_version = None
 		status = self.checker.check(pa)

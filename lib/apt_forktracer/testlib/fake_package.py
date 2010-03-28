@@ -24,14 +24,14 @@ class FakePackage:
 	def __init__(self, current_state = apt_pkg.CURSTATE_INSTALLED, name = 'afake'):
 		self.Name = name
 		self.VersionList = []
-		self.CurrentState = current_state
-		self.CurrentVer = None
+		self.current_state = current_state
+		self.current_ver = None
 	def append_version(self, version, current = False):
 		self.VersionList.append(version)
 		if current:
-			self.CurrentVer = version
+			self.current_ver = version
 	def __str__(self):
 		vers = ''
 		for v in self.VersionList:
 			vers += str(v) + ','
-		return '<FakePackage(%s) %s v=%s [%s]>' % (self.CurrentState, self.Name, str(self.CurrentVer), vers)
+		return '<FakePackage(%s) %s v=%s [%s]>' % (self.current_state, self.Name, str(self.current_ver), vers)

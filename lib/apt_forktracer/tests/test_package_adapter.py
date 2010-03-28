@@ -91,7 +91,7 @@ class TestFourVersionPackageAdapter(TestBasePackageAdapter):
 class TestPackageAdapterWithInstalledVersion(TestBasePackageAdapter):
 	def setUp_mangle_fake_package(self):
 		self.setUpAddAVersion()
-		self.fake_package.CurrentVer = FakeVersion('1.xx.yy')
+		self.fake_package.current_ver = FakeVersion('1.xx.yy')
 		self.official_version = FakeVersion._create('2.3.4', ['Debian'])
 		self.fake_package.append_version(self.official_version)
 	def setUp_mangle_package_adapter(self):
