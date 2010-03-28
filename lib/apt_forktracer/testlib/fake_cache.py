@@ -20,11 +20,11 @@ class FakeCache:
 	the real one, because it is tied to the binary cache file, which is
 	difficult to construct and control."""
 	def __init__(self):
-		self.Packages = []
+		self.packages = []
 	def append_package(self, package):
-		self.Packages.append(package)
+		self.packages.append(package)
 	def __str__(self):
 		pkgs = ''
-		for p in self.Packages:
+		for p in self.packages:
 			pkgs += str(p)+','
 		return '<FakeCache [%s]>' % pkgs

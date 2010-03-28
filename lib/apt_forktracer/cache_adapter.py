@@ -27,7 +27,7 @@ class _CacheAdapter:
 		self.reporter = reporter
 		self.states_we_check = [ apt_pkg_adapter.state_installed, apt_pkg_adapter.state_half_configured, apt_pkg_adapter.state_half_installed, apt_pkg_adapter.state_unpacked ]
 	def run(self, checker, policy, package_adapter_factory):
-		for package in self.apt_cache.Packages:
+		for package in self.apt_cache.packages:
 			if package.CurrentState not in self.states_we_check:
 				continue
 			pa = package_adapter_factory.create_package_adapter(package)
@@ -38,6 +38,6 @@ class _CacheAdapter:
 				self.reporter.report(status)
 
 	def __str__(self):
-		return '<CacheAdapter with %d package(s)>' % len(self.apt_cache.Packages)
+		return '<CacheAdapter with %d package(s)>' % len(self.apt_cache.packages)
 	__repr__ = __str__
 

@@ -85,7 +85,7 @@ class TestIntegraton(test_helper.MoxTestCase):
 		git.append_version(git_backport_version, True)
 
 		self.apt_cache = self.struct()
-		self.apt_cache.Packages = [git, libc6, libspf, libfoobar]
+		self.apt_cache.packages = [git, libc6, libspf, libfoobar]
 
 		self.apt_depcache = self.struct()
 		version_table = {
