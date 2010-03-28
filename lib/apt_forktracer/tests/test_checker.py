@@ -25,9 +25,10 @@ from apt_forktracer.testlib.fake_version import FakeVersion
 from apt_forktracer.package_adapter import PackageAdapter
 from apt_forktracer.version_adapter import VersionAdapter
 
-class CheckerCheckTestCase(test_helper.TestCase):
+class CheckerCheckTestCase(test_helper.MoxTestCase):
 	"""Common plumbing."""
 	def setUp(self):
+		super(CheckerCheckTestCase, self).setUp()
 		self.fp = FakePackage()
 		self.apt_pkg_adapter = AptPkgAdapter(self._create_mock_apt_pkg_module())
 		self.apt_pkg_adapter.init()
@@ -46,7 +47,7 @@ class CheckerCheckTestCase(test_helper.TestCase):
 		pa.candidate_version = VersionAdapter((FakeVersion._create('1.2.4', ['Debian'])))
 		return pa
 
-class NonVerboseCheckerCheckTest(CheckerCheckTestCase):
+class GeneralNonVerboseCheckerCheckTest(CheckerCheckTestCase):
 	"""Whether a status is returned depends on the CANDIDATE version, not the
 	   currently installed one. This is to cut down on noise when machines are
 	   behind WRT upgrades."""
@@ -81,9 +82,6 @@ class NonVerboseCheckerCheckTest(CheckerCheckTestCase):
 		pa = PackageAdapter(self.fp)
 		pa.candidate_version = pa.current_version
 		self.assertEquals(self.checker.check(pa), None)
-	def test_returns_none_when_candidate_different_from_current(self):
-		pa = self._prepare_package_with_candidate_different_from_current()
-		self.assertEquals(self.checker.check(pa), None)
 	def test_returns_none_in_common_case_when_all_versions_available_additionally_from_unofficial_source(self):
 		self.fp.append_version(FakeVersion._create('1.2.3', ['Debian', 'UnOfficial']), True)
 		self.fp.append_version(FakeVersion._create('1.2.2', ['Debian', 'UnOfficial']))
@@ -111,23 +109,24 @@ class NonVerboseCheckerCheckTest(CheckerCheckTestCase):
 		pa.candidate_version = None
 		status = self.checker.check(pa)
 		self.assert_(status != None)
+
+class NonVerboseCheckerCheckTest(GeneralNonVerboseCheckerCheckTest):
 	def test_returns_none_on_package_with_candidate_from_official_source_and_current_from_unofficial(self):
 		self.assertEquals(self.checker.check(self._prepare_package_with_candidate_from_official_source_and_current_from_unofficial()), None)
+	def test_returns_none_when_candidate_different_from_current(self):
+		pa = self._prepare_package_with_candidate_different_from_current()
+		self.assertEquals(self.checker.check(pa), None)
 
-class VerboseCheckerCheckTest(NonVerboseCheckerCheckTest):
+class VerboseCheckerCheckTest(GeneralNonVerboseCheckerCheckTest):
 	"""Returns None in less cases than in the non-verbose mode."""
 	def setUpChecker(self):
 		self.checker = Checker(self._create_mock_facter('Debian'), True)
 	def test_returns_a_status_object_on_package_with_candidate_from_official_source_and_current_from_unofficial(self):
 		status = self.checker.check(self._prepare_package_with_candidate_from_official_source_and_current_from_unofficial())
 		self.assert_(status != None)
-	def test_returns_none_on_package_with_candidate_from_official_source_and_current_from_unofficial(self):
-		pass
 	def test_returns_a_status_object_when_candidate_different_from_current(self):
 		pa = self._prepare_package_with_candidate_different_from_current()
 		self.assert_(self.checker.check(pa) != None)
-	def test_returns_none_when_candidate_different_from_current(self):
-		pass
 
 if __name__ == '__main__':
 	unittest.main()

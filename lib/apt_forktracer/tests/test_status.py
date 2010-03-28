@@ -23,8 +23,9 @@ from apt_forktracer.testlib.fake_version import FakeVersion
 from apt_forktracer.status import Status
 from apt_forktracer.version_adapter import VersionAdapter
 
-class TestInstantiation(test_helper.TestCase):
+class TestInstantiation(test_helper.MoxTestCase):
 	def setUp(self):
+		super(TestInstantiation, self).setUp()
 		fv1 = FakeVersion()
 		fv1.append_package_file(FakePackageFile())
 		installed_version = VersionAdapter(fv1)
@@ -53,8 +54,9 @@ class TestInstantiation(test_helper.TestCase):
 		self.assertMatches(str(self.s), r'<Status foo .*1\.2\.3.*->.*1\.2\.4.*\[Debian: foo\]')
 		self.assertMatches(str(self.s), r'<Status foo .*1\.2\.3.*->.*1\.2\.4.*\[Another: bar,baz\]')
 
-class Test_Instantiation_Without_Official_Versions(test_helper.TestCase):
+class Test_Instantiation_Without_Official_Versions(test_helper.MoxTestCase):
 	def setUp(self):
+		super(Test_Instantiation_Without_Official_Versions, self).setUp()
 		fv1 = FakeVersion('1.2.5')
 		fv1.append_package_file(FakePackageFile())
 		installed_version = VersionAdapter(fv1)

@@ -20,7 +20,7 @@ import unittest
 from apt_forktracer.testlib import test_helper
 from apt_forktracer.config_finder import ConfigFinder
 
-class Test_Config_Finder(test_helper.TestCase):
+class Test_Config_Finder(test_helper.MoxTestCase):
 	def test(self):
 		cf = ConfigFinder('test-data/config', 'test-data/not_exists', 'test-data/config.d')
 		entries = 0

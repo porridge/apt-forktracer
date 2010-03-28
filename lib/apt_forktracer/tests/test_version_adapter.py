@@ -22,8 +22,9 @@ from apt_forktracer.testlib.fake_package_file import FakePackageFile
 from apt_forktracer.testlib.fake_version import FakeVersion
 from apt_forktracer.version_adapter import VersionAdapter
 
-class TestBaseVersionAdapter(test_helper.TestCase):
+class TestBaseVersionAdapter(test_helper.MoxTestCase):
 	def setUp(self):
+		super(TestBaseVersionAdapter, self).setUp()
 		self.setUpFakeVersion()
 		self.setUpVersionAdapter()
 	def setUpFakeVersion(self):
@@ -40,10 +41,11 @@ class TestBaseVersionAdapter(test_helper.TestCase):
 	def setUpAddAFile(self):
 		self.fake_version.append_package_file(FakePackageFile(path = '/b/lah'))
 
-class TestVersionOfficiallyAvailable(test_helper.TestCase):
+class TestVersionOfficiallyAvailable(test_helper.MoxTestCase):
 	"""Testing the is_officially_available() method."""
 	def setUp(self):
-		self.mock_apt_version = self.mock()
+		super(TestVersionOfficiallyAvailable, self).setUp()
+		self.mock_apt_version = self.struct()
 		self.mock_apt_version.VerStr = '1.2.3'
 		self.mock_apt_version.FileList = [(FakePackageFile(type = 'dpkg'), 1)]
 		self.mock_facter = self._create_mock_facter('Debian')
@@ -72,6 +74,7 @@ class TestZeroFileVersionAdapter(TestBaseVersionAdapter):
 
 class TestOneFileVersionAdapter(TestBaseVersionAdapter):
 	def setUp(self):
+		super(TestOneFileVersionAdapter, self).setUp()
 		self.setUpFakeVersion()
 		self.setUpAddAFile()
 		self.setUpVersionAdapter()
@@ -83,6 +86,7 @@ class TestOneFileVersionAdapter(TestBaseVersionAdapter):
 
 class TestThreeFilesVersionAdapter(TestBaseVersionAdapter):
 	def setUp(self):
+		super(TestThreeFilesVersionAdapter, self).setUp()
 		self.setUpFakeVersion()
 		for i in range(3):
 			self.setUpAddAFile()

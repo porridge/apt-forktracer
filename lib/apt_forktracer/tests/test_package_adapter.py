@@ -23,8 +23,9 @@ from apt_forktracer.testlib.fake_package import FakePackage
 from apt_forktracer.testlib.fake_version import FakeVersion
 from apt_forktracer.package_adapter import PackageAdapter
 
-class TestBasePackageAdapter(test_helper.TestCase):
+class TestBasePackageAdapter(test_helper.MoxTestCase):
 	def setUp(self):
+		super(TestBasePackageAdapter, self).setUp()
 		self.fake_package = FakePackage()
 		self.setUp_mangle_fake_package()
 		self.pa = PackageAdapter(self.fake_package)

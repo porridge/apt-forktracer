@@ -23,8 +23,9 @@ from apt_forktracer.testlib.fake_version import FakeVersion
 from apt_forktracer.version_adapter import VersionAdapter
 from apt_forktracer.version_checker import VersionChecker
 
-class VersionCheckerTest(test_helper.TestCase):
+class VersionCheckerTest(test_helper.MoxTestCase):
 	def setUp(self):
+		super(VersionCheckerTest, self).setUp()
 		self.fp = FakePackage()
 		self.facter = self._create_mock_facter('Debian')
 		self.setUpChecker()

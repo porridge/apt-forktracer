@@ -20,8 +20,9 @@ import unittest
 from apt_forktracer.testlib import test_helper
 from apt_forktracer.config_stanza import ConfigStanza
 
-class Test_ConfigStanza(test_helper.TestCase):
+class Test_ConfigStanza(test_helper.MoxTestCase):
 	def setUp(self):
+		super(Test_ConfigStanza, self).setUp()
 		self.cs = ConfigStanza()
 		self.assert_(self.cs.is_empty())
 	def test_empty(self):

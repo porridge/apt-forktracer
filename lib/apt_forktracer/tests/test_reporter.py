@@ -21,12 +21,13 @@ from apt_forktracer.testlib import test_helper
 from apt_forktracer.reporter import Reporter
 from apt_forktracer.status import Status
 
-class TestReporter(test_helper.TestCase):
+class TestReporter(test_helper.MoxTestCase):
 	def setUp(self):
+		super(TestReporter, self).setUp()
 		self.reporter = Reporter()
 
 	def testFormattingNoCandidateVersion(self):
-		v1 = self.mock()
+		v1 = self.struct()
 		v1.string = '1.2'
 		status = Status('apackage', v1, None)
 		report = self.reporter.format(status)
@@ -34,7 +35,7 @@ class TestReporter(test_helper.TestCase):
 		self.assertNotContains(report, '[')
 
 	def testFormattingNoCurrentVersion(self):
-		v1 = self.mock()
+		v1 = self.struct()
 		v1.string = '1.2'
 		status = Status('apackage', None, v1)
 		report = self.reporter.format(status)
@@ -42,11 +43,11 @@ class TestReporter(test_helper.TestCase):
 		self.assertNotContains(report, '[')
 
 	def testFormatting(self):
-		v1 = self.mock()
+		v1 = self.struct()
 		v1.string = '1.2'
-		v2 = self.mock()
+		v2 = self.struct()
 		v2.string = '1.3'
-		v3, v4 = self.mock(), self.mock()
+		v3, v4 = self.struct(), self.struct()
 		v3.string = '1.2.3'
 		v4.string = 'x.y.z'
 		status = Status('apackage', v1, v2, {'Debian': [v3, v4], 'another origin': [v3, v4]})
@@ -56,7 +57,7 @@ class TestReporter(test_helper.TestCase):
 		self.assertContains(report, ' [another origin: 1.2.3 x.y.z]')
 
 	def testFormattingSameVersion(self):
-		v = self.mock()
+		v = self.struct()
 		v.string = '1.2'
 		status = Status('apackage', v, v)
 		report = self.reporter.format(status)
@@ -65,7 +66,7 @@ class TestReporter(test_helper.TestCase):
 
 	def testReporting(self):
 		"""Since this should print to stdout, we don't call it, just check the method's there."""
-		mock_status = self.mock()
+		mock_status = self.struct()
 		self.assert_(self.reporter.report)
 
 if __name__ == '__main__':

@@ -21,20 +21,23 @@ from apt_forktracer.testlib import test_helper
 from apt_forktracer.testlib.fake_package_file import FakePackageFile
 from apt_forktracer.package_file_adapter import PackageFileAdapter
 
-class BasePFATest(test_helper.TestCase):
+class BasePFATest(test_helper.MoxTestCase):
 	def setUpPF(self):
 		self.fake_package_file = FakePackageFile()
 	def setUp(self):
+		super(BasePFATest, self).setUp()
 		self.setUpPF()
 		self.pfa = PackageFileAdapter(self.fake_package_file)
 		self.mock_debian_facter = self._create_mock_facter('Debian')
 		self.mock_ubuntu_facter = self._create_mock_facter('Ubuntu')
+
+class BasePFATestWithOfficial(BasePFATest):
 	def testIsOfficialTrue(self):
 		self.assert_(self.pfa.is_official(self.mock_debian_facter))
 	def testIsOfficialFalse(self):
 		self.assert_(not self.pfa.is_official(self.mock_ubuntu_facter))
 
-class TestBasePackageFileAdapter(BasePFATest):
+class TestBasePackageFileAdapter(BasePFATestWithOfficial):
 	def testAttributes(self):
 		self.assertEquals(self.pfa.name, '/a/fake')
 		self.assertEquals(self.pfa.archive, 'stable-proposed-updates')
@@ -47,7 +50,7 @@ class TestBasePackageFileAdapter(BasePFATest):
 	def testStringification(self):
 		self.assertMatches(str(self.pfa), '<PackageFileAdapter path=/a/fake a=stable-proposed-updates c=main v=1.0 o=Debian l=Debian>')
 
-class TestBasePackageFileAdapterNonAuto(BasePFATest):
+class TestBasePackageFileAdapterNonAuto(BasePFATestWithOfficial):
 	def setUpPF(self):
 		BasePFATest.setUpPF(self)
 		self.fake_package_file.NotAutomatic = 1
@@ -71,8 +74,6 @@ class TestBasePackageFileAdapterDpkgStatus(BasePFATest):
 		self.assertEquals(self.pfa.index_type, 'Debian dpkg status file')
 	def testStringification(self):
 		self.assertMatches(str(self.pfa), '<PackageFileAdapter\(dpkg status\) path=/var/lib/dpkg/status>')
-	def testIsOfficialTrue(self):
-		pass
 	def testIsOfficialFalse(self):
 		self.assert_(not self.pfa.is_official(self.mock_debian_facter))
 		self.assert_(not self.pfa.is_official(self.mock_ubuntu_facter))

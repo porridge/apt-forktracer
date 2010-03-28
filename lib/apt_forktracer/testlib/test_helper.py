@@ -15,11 +15,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import pmock
+import mox
 import re
-import unittest
 
-from apt_forktracer.testlib.fake_version import FakeVersion
 from apt_forktracer.facter import Facter
 
 def copy_state_constants(to_obj, from_obj):
@@ -107,19 +105,8 @@ class Advanced_Version_Comparator:
 			raise ValueError('not attempting to compare %s with %s (tilde found)' % (v1, v2))
 		return cmp(v1, v2)
 
-from pmock import FunctorConstraint
 
-class DescriptionFunctorConstraint(FunctorConstraint):
-	def __init__(self, boolean_functor, desc = ''):
-		self._boolean_functor = boolean_functor
-		self._description = desc
-	def __repr__(self):
-		if self._description == '':
-			return "%s.functor(%s)" % (__name__, repr(self._boolean_functor))
-		else:
-			return "%s.functor(%s)" % (__name__, self._description)
-
-class ForkTracerTestCaseBase(unittest.TestCase):
+class MoxTestCase(mox.MoxTestBase):
 	def assertContains(self, haystack, needle):
 		self.assert_(haystack.find(needle) >= 0, 'could not find %s in %s' % (needle, haystack))
 	def assertNotContains(self, haystack, needle):
@@ -139,76 +126,10 @@ class ForkTracerTestCaseBase(unittest.TestCase):
 		if succeeded:
 			self.fail('%s did not fail with %s' % (method, exception_class))
 
-class TestCase(pmock.MockTestCase, ForkTracerTestCaseBase):
-	def functor(self, boolean_functor, desc = ''):
-		return DescriptionFunctorConstraint(boolean_functor, desc)
-
-	def _create_mock_facter(self, id):
-		mock_facter = self.mock()
-		mock_facter.distributors_id = id
-		return mock_facter
-
-	def _create_mock_cache_adapter(self):
-		mock_cache_adapter = self.mock()
-		comparator = Advanced_Version_Comparator()
-		class ComparatorStub:
-			def __init__(self, comparator):
-				self.comparator = comparator
-			def invoke(self, invocation):
-				return self.comparator.compare(invocation.args[0], invocation.args[1])
-		mock_cache_adapter.stubs().method("version_compare").will(ComparatorStub(comparator))
-		class SorterStub:
-			def __init__(self, comparator):
-				self.comparator = comparator
-			def invoke(self, invocation):
-				invocation.args[0].sort(lambda va, vb: self.comparator.compare(va.string, vb.string), reverse = True)
-				return invocation.args[0]
-		mock_cache_adapter.stubs().method("version_sort").will(SorterStub(comparator))
-		class MaxVersionStub:
-			def __init__(self, comparator):
-				self.comparator = comparator
-			def invoke(self, invocation):
-				if len(invocation.args[0]) == 0:
-					return None
-				invocation.args[0].sort(lambda va, vb: self.comparator.compare(va.string, vb.string), reverse = True)
-				return invocation.args[0][0]
-		mock_cache_adapter.stubs().method("version_max").will(MaxVersionStub(comparator))
-		return mock_cache_adapter
-
-	def _create_mock_apt_pkg_module(self):
-		mock_apt_pkg_module = self.mock()
-		comparator = Advanced_Version_Comparator()
-		class ComparatorStub:
-			def __init__(self, comparator):
-				self.comparator = comparator
-			def invoke(self, invocation):
-				return self.comparator.compare(invocation.args[0], invocation.args[1])
-		mock_apt_pkg_module.stubs().method("VersionCompare").will(ComparatorStub(comparator))
-		mock_apt_pkg_module.stubs().InitConfig()
-		mock_apt_pkg_module.stubs().InitSystem()
-		return mock_apt_pkg_module
-
-import mox
-
-class MoxTestCase(mox.MoxTestBase, ForkTracerTestCaseBase):
-	def mock(self):
-		"""This is here to mimic the old pmock infrastructure.
-
-		TODO: It should probably be removed at some point to force usage of
-		CreateMock(type).
-		"""
-		return self.mox.CreateMockAnything()
-
-	def functor(self, boolean_functor, desc = ''):
-		raise NotImplementedError()
-
 	def _create_mock_facter(self, id):
 		mock_facter = self.mox.CreateMock(Facter)
 		mock_facter.distributors_id = id
 		return mock_facter
-
-	def _create_mock_cache_adapter(self):
-		raise NotImplementedError()
 
 	def struct(self, **kwargs):
 		class Struct:
