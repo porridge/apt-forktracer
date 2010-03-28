@@ -79,7 +79,7 @@ class AptPkgAdapter:
 		self._assert_initialized()
 		if not self.apt_cache:
 			raise Exception('you must call get_cache_adapter() earlier')
-		apt_depcache = self.apt_pkg.GetDepCache(self.apt_cache)
+		apt_depcache = self.apt_pkg.DepCache(self.apt_cache)
 		return depcache_adapter_factory.create_depcache_adapter(apt_depcache)
 
 	def version_compare(self, version_a, version_b):
