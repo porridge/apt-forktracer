@@ -248,7 +248,7 @@ class Test_Policy_With_Config_Track_Candidate_Base_Version(TestPolicyBase):
 		self.assert_should_report_yes(('2.2',   ['ANOTHER origin']),  ('2.2',   ['ANOTHER origin']),  ['2.0'], package = 'package_without_config')
 		self.assert_should_report_NOT(('2.0~1', ['ANOTHER origin']),  ('2.0~1', ['ANOTHER origin']),  ['2.0'], package = 'package_without_config')
 
-class Test_Policy_With_Config_For_Non_Debian_Tracked_origin(TestPolicyBase):
+class Test_Policy_With_Config_For_Non_Debian_Tracked_Origin(TestPolicyBase):
 	def set_up_policy_creation(self):
 		self.policy = Policy(self.apt_pkg_adapter, self.mock_facter, self._create_mock_config([{'accepted_origin': 'accepted origin', 'track_origin': 'tracked origin', 'track_version': '2.0'}]))
 	def test_configured_origin_is_ignored(self):
@@ -273,7 +273,7 @@ class Test_Policy_With_Config_For_Non_Debian_Tracked_origin(TestPolicyBase):
 		self.mox.ReplayAll()
 		self.assert_should_report_NOT(('2.0~1', ['ANOTHER origin']), ('2.0~1', ['ANOTHER origin']),  ['2.0'], package = 'package_without_config', other_versions = {'tracked origin': ['2.0']})
 
-class Test_Policy_With_Config_For_Any_Accepted_origin(TestPolicyBase):
+class Test_Policy_With_Config_For_Any_Accepted_Origin(TestPolicyBase):
 	def set_up_policy_creation(self):
 		self.policy = Policy(self.apt_pkg_adapter, self.mock_facter, self._create_mock_config([{'accepted_origin': '*', 'track_origin': 'tracked origin', 'track_version': '2.0'}]))
 	def test_any_origin_is_ignored(self):
@@ -292,7 +292,7 @@ class Test_Policy_With_Config_For_Any_Accepted_origin(TestPolicyBase):
 		self.mox.ReplayAll()
 		self.assert_should_report_NOT(('2.0~1', ['ANOTHER origin']), ('2.0~1', ['ANOTHER origin']), ['2.0'], package = 'package_without_config', other_versions = {'tracked origin': ['2.0']})
 
-class Test_Policy_With_Config_For_Any_Tracked_origin(TestPolicyBase):
+class Test_Policy_With_Config_For_Any_Tracked_Origin(TestPolicyBase):
 	def set_up_policy_creation(self):
 		self.policy = Policy(self.apt_pkg_adapter, self.mock_facter, self._create_mock_config([{'accepted_origin': 'accepted origin', 'track_origin': '*', 'track_version': '2.0'}]))
 	def test_origin_is_ignored_if_ANY_origin_meets_condition(self):

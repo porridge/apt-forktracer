@@ -18,7 +18,7 @@
 from apt_forktracer.package_file_adapter import PackageFileAdapter
 
 class VersionAdapter:
-	"""Mirror of the aptCache::version libapt class. See AptPkgAdapter for an
+	"""Mirror of the aptCache::Version libapt class. See AptPkgAdapter for an
 	explanation of why this is needed."""
 	def __init__(self, apt_version):
 		self.string = apt_version.ver_str

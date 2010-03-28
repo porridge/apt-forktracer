@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -73,9 +73,9 @@ class Policy:
 		"""Creates a stanza used when there is no configuration for a given
 		package.
 
-		Such Stanza has a matching Package tag, Accept-origin that matches
-		anything, Track-origin equal to the distributor ID according to facter,
-		and Track-version equal to the candidate version (or the base of the
+		Such Stanza has a matching Package tag, Accept-Origin that matches
+		anything, Track-Origin equal to the distributor ID according to facter,
+		and Track-Version equal to the candidate version (or the base of the
 		candidate version, if base argument is True).
 		"""
 		s = ConfigStanza()

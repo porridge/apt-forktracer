@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@ class ConfigStanza:
 	"""Represents a single stanza in a configuration file, such as:
 
 	Package: foo
-	Accept-origin: O1
-	Track-origin: O2
-	Track-version: 1.2.3
+	Accept-Origin: O1
+	Track-Origin: O2
+	Track-Version: 1.2.3
 
 	Tags are on the left of the colons, and their values on the right.
 	"""
