@@ -18,6 +18,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp 
 	python setup.py clean
+	find . -type f -name '*.py[oc]' -delete
 	rm -rf build
 	dh_clean
 
