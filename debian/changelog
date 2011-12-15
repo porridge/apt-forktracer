@@ -1,3 +1,12 @@
+apt-forktracer (0.4) unstable; urgency=medium
+
+  * Upgrade lsb-release recommends to depends. (Closes: #651639)
+  * Adjusted apt_pkg_adapter.NullProgress for new pyapt API. (Closes: #625566)
+  * Bumped Standards-Version, no changes needed.
+  * Move to debhelper 8, start using dh.
+
+ -- Marcin Owsiany <porridge@debian.org>  Thu, 15 Dec 2011 20:00:06 +0100
+
 apt-forktracer (0.3) unstable; urgency=medium
 
   * Updated unit tests to use mox instead of pmock, which is dead.
