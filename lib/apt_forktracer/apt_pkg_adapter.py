@@ -17,11 +17,11 @@
 
 class NullProgress:
 	"""Makes libapt shut up when passed to Cache()."""
-	def __init__(self):
+	def __init__(self, *args, **kwargs):
 		pass
-	def update(self, something):
+	def update(self, *args, **kwargs):
 		pass
-	def done(self):
+	def done(self, *args, **kwargs):
 		pass
 
 class AptPkgAdapter:
