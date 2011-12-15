@@ -1,51 +1,10 @@
 #!/usr/bin/make -f
-# Sample debian/rules that uses debhelper.
-# GNU copyright 1997 to 1999 by Joey Hess.
-# Adapted for apt-forktracer package
-# Copyright 2002-2008 Marcin Owsiany
-# License: GPL v2 or later
+%:
+	dh  $@
 
-#export DH_VERBOSE=1
-
-build: build-stamp
-build-stamp:
-	dh_testdir
-	python setup.py build
-	touch build-stamp
-
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp 
-	python setup.py clean
-	find . -type f -name '*.py[oc]' -delete
-	rm -rf build
-	dh_clean
-
-install: build
-	dh_testdir
-	dh_testroot
+# Install the module as private.
+override_dh_auto_install:
 	python setup.py install --no-compile \
 		--install-scripts $(CURDIR)/debian/apt-forktracer/usr/bin \
 		--install-lib     $(CURDIR)/debian/apt-forktracer/usr/share/apt-forktracer
 	rm -f                     $(CURDIR)/debian/apt-forktracer/usr/share/apt-forktracer/apt_forktracer-*.egg-info
-
-binary-indep: build install
-	dh_testdir
-	dh_testroot
-	dh_installdocs
-	dh_installman apt-forktracer.pl.8 apt-forktracer.8 forktracer.conf.pl.5 forktracer.conf.5
-	dh_installchangelogs
-	dh_pysupport
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary-arch: build install
-# We have nothing to do.
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install 
