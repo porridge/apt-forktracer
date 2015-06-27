@@ -1,10 +1,12 @@
 #!/usr/bin/make -f
 %:
-	dh  $@
+	dh $@ --with python2
 
 # Install the module as private.
 override_dh_auto_install:
 	python setup.py install --no-compile \
-		--install-scripts $(CURDIR)/debian/apt-forktracer/usr/bin \
-		--install-lib     $(CURDIR)/debian/apt-forktracer/usr/share/apt-forktracer
-	rm -f                     $(CURDIR)/debian/apt-forktracer/usr/share/apt-forktracer/apt_forktracer-*.egg-info
+		--root=debian/apt-forktracer \
+		--install-layout=deb \
+		--install-scripts=/usr/bin \
+		--install-lib=/usr/share/apt-forktracer
+	rm -f debian/apt-forktracer/usr/share/apt-forktracer/apt_forktracer-*.egg-info
