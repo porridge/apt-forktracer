@@ -2,6 +2,7 @@ apt-forktracer (0.5) unstable; urgency=low
 
   * Migrate from python-support to dh-python. (Closes: #785958)
     Thanks to Ubuntu guys for the patch!
+  * Bumped Standards-Version, no changes needed.
 
  -- Marcin Owsiany <porridge@debian.org>  Sat, 27 Jun 2015 22:35:04 +0200
 
