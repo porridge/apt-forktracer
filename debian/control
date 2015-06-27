@@ -10,10 +10,11 @@ Package: apt-forktracer
 Architecture: all
 Depends: python-apt (>= 0.7.93.2), ${python:Depends}, ${misc:Depends}, lsb-release (>= 3.2-21)
 XB-Python-Version: ${python:Versions}
-Description: a utility for tracking non-official package versions
+Description: utility for tracking non-official package versions
  apt-forktracer tries to alleviate the problem that APT stops tracking official
  versions of a package after you pin it or install a newer version.
  .
- It displays a list of packages which are in an inconsistent state or have a
- version other than the newest official installed. You can choose to ignore
- certain packages - if they match certain criteria - with a configuration file.
+ apt-forktracer displays a list of packages which are in an inconsistent state,
+ or whose installed version is different than the newest official one. You can
+ choose to ignore certain packages - if they match certain criteria - using
+ a configuration file.
