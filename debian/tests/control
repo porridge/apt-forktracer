@@ -1,0 +1,2 @@
+Test-Command: apt-forktracer
+Features: test-name=smoke
