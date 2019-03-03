@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ class TestPolicyBase(test_helper.MoxTestCase):
 		official_versions = [self._create_mock_version_adapter(v) for v in _official_versions]
 		vbo = {}
 		vbo['Debian'] = official_versions
-		for o, vers in other_versions.items():
+		for o, vers in list(other_versions.items()):
 			vbo[o] = [self._create_mock_version_adapter((v, o,)) for v in vers]
 		return Status(package, self._create_mock_version_adapter(current_version), self._create_mock_version_adapter(candidate_version), vbo)
 	def _create_mock_config(self, hashes):
@@ -71,10 +71,10 @@ class TestPolicyBase(test_helper.MoxTestCase):
 		self.policy = Policy(self.apt_pkg_adapter, self.mock_facter, self._create_mock_config([]))
 	def assert_should_report_yes(self, current_version, candidate_version, official_versions, package = 'apackage', other_versions = {}):
 		s = self._create_mock_status(package, current_version, candidate_version, official_versions, other_versions = other_versions)
-		self.assert_(self.policy.should_report(s))
+		self.assertTrue(self.policy.should_report(s))
 	def assert_should_report_NOT(self, current_version, candidate_version, official_versions, package = 'apackage', other_versions = {}):
 		s = self._create_mock_status(package, current_version, candidate_version, official_versions, other_versions = other_versions)
-		self.assert_(not self.policy.should_report(s))
+		self.assertTrue(not self.policy.should_report(s))
 	def test_missing_version(self):
 		self.mox.ReplayAll()
 		self.assert_should_report_yes('2.1~1', None, ['2.1'])
@@ -85,10 +85,10 @@ class Test_Policy_Base_Version(TestPolicyBase):
 	def test_base_version(self):
 		self.mox.ReplayAll()
 		self.assertRaises(TypeError, self.policy.base, None)
-		self.assertEquals(self.policy.base(''), '')
-		self.assertEquals(self.policy.base('1'), '1')
-		self.assertEquals(self.policy.base('1~1'), '1')
-		self.assertEquals(self.policy.base('1~1~2'), '1~1')
+		self.assertEqual(self.policy.base(''), '')
+		self.assertEqual(self.policy.base('1'), '1')
+		self.assertEqual(self.policy.base('1~1'), '1')
+		self.assertEqual(self.policy.base('1~1~2'), '1~1')
 
 class Test_Policy_Should_Report_With_Same_Candidate_Version_As_Installed(TestPolicyBase):
 	def test_official_not_available(self):

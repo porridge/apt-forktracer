@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,19 +33,19 @@ class VersionCheckerTest(test_helper.MoxTestCase):
 		self.vchecker = VersionChecker(self.facter)
 	def test_analyze_version_without_sources_returns_true(self):
 		v = VersionAdapter(FakeVersion._create('1.2.3', []))
-		self.assert_(self.vchecker.analyze(v))
+		self.assertTrue(self.vchecker.analyze(v))
 	def test_analyze_version_only_in_dpkg_status_file_returns_true(self):
 		v = VersionAdapter(FakeVersion._create('1.2.3', ['dpkg']))
-		self.assert_(self.vchecker.analyze(v))
+		self.assertTrue(self.vchecker.analyze(v))
 	def test_analyze_version_in_dpkg_status_file_and_unofficial_source_returns_true(self):
 		v = VersionAdapter(FakeVersion._create('1.2.3', ['dpkg', 'NonDebian']))
-		self.assert_(self.vchecker.analyze(v))
+		self.assertTrue(self.vchecker.analyze(v))
 	def test_analyze_version_in_dpkg_status_file_and_official_source_returns_false(self):
 		v = VersionAdapter(FakeVersion._create('1.2.3', ['dpkg', 'Debian']))
-		self.assert_(not self.vchecker.analyze(v))
+		self.assertTrue(not self.vchecker.analyze(v))
 	def test_analyze_version_in_dpkg_status_file_and_both_official_and_unofficial_source_returns_false(self):
 		v = VersionAdapter(FakeVersion._create('1.2.3', ['dpkg', 'Debian', 'NonDebian']))
-		self.assert_(not self.vchecker.analyze(v))
+		self.assertTrue(not self.vchecker.analyze(v))
 
 if __name__ == '__main__':
 	unittest.main()

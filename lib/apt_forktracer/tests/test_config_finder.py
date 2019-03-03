@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,17 +23,16 @@ from apt_forktracer.config_finder import ConfigFinder
 class Test_Config_Finder(test_helper.MoxTestCase):
 	def test(self):
 		cf = ConfigFinder('test-data/config', 'test-data/not_exists', 'test-data/config.d')
-		entries = 0
 		plan = [
 			('test-data/config', 4),
 			('test-data/config.d/sub.conf', 0),
 			('INVALID ENTRY to catch unexpected files', 0)
 		]
-		for path, file in cf:
-			self.assertEquals(path, plan[entries][0])
-			self.assert_(file.readlines() > plan[entries][1])
-			entries += 1
-		self.assertEquals(entries, 2)
+		for actual, expected in zip(cf, plan):
+			path, file = actual
+			expected_path, expected_len = expected
+			self.assertEqual(path, expected_path)
+			self.assertTrue(len(file.readlines()) > expected_len)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 import apt_pkg
-import mox
+from mox3 import mox as mox
 import unittest
 
 from apt_forktracer.checker import Checker
@@ -60,10 +60,10 @@ class Test_Base_Cache_Adapter(test_helper.MoxTestCase):
 		self.assertContains(str(self.ca), 'CacheAdapter')
 	def test_states_copied(self):
 		self.mox.ReplayAll()
-		self.assertEquals(self.ca.states_we_check[0], apt_pkg.CURSTATE_INSTALLED)
-		self.assertEquals(self.ca.states_we_check[1], apt_pkg.CURSTATE_HALF_CONFIGURED)
-		self.assertEquals(self.ca.states_we_check[2], apt_pkg.CURSTATE_HALF_INSTALLED)
-		self.assertEquals(self.ca.states_we_check[3], apt_pkg.CURSTATE_UNPACKED)
+		self.assertEqual(self.ca.states_we_check[0], apt_pkg.CURSTATE_INSTALLED)
+		self.assertEqual(self.ca.states_we_check[1], apt_pkg.CURSTATE_HALF_CONFIGURED)
+		self.assertEqual(self.ca.states_we_check[2], apt_pkg.CURSTATE_HALF_INSTALLED)
+		self.assertEqual(self.ca.states_we_check[3], apt_pkg.CURSTATE_UNPACKED)
 
 class Test_Empty_Cache_Adapter(Test_Base_Cache_Adapter):
 	def test_stringification_with_empty_cache(self):

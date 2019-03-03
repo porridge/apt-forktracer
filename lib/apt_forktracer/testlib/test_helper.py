@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import mox
+from mox3 import mox as mox
 import re
 
 from apt_forktracer.facter import Facter
@@ -103,25 +103,27 @@ class Advanced_Version_Comparator:
 				return 0 - comparison[2]
 		if v1.find('~') >= 0 or v2.find('~') >= 0:
 			raise ValueError('not attempting to compare %s with %s (tilde found)' % (v1, v2))
-		return cmp(v1, v2)
+		if v1 > v2:
+			return 1
+		return -1
 
 
 class MoxTestCase(mox.MoxTestBase):
 	def assertContains(self, haystack, needle):
-		self.assert_(haystack.find(needle) >= 0, 'could not find %s in %s' % (needle, haystack))
+		self.assertTrue(haystack.find(needle) >= 0, 'could not find %s in %s' % (needle, haystack))
 	def assertNotContains(self, haystack, needle):
-		self.assert_(haystack.find(needle) < 0, 'found "%s" in "%s"' % (needle, haystack))
+		self.assertTrue(haystack.find(needle) < 0, 'found "%s" in "%s"' % (needle, haystack))
 	def assertMatches(self, haystack, regex):
-		self.assert_(re.compile(regex).search(haystack), 'could not match "%s" against "%s"' % (haystack, regex))
+		self.assertTrue(re.compile(regex).search(haystack), 'could not match "%s" against "%s"' % (haystack, regex))
 
 	def assertRaisesWithMessageContaining(self, exception_class, message_snippet, method, *args, **kwargs):
 		succeeded = False
 		try:
 			method(*args, **kwargs)
 			succeeded = True
-		except exception_class, e:
-			self.assertContains(e.message, message_snippet)
-		except Exception, e:
+		except exception_class as e:
+			self.assertContains(str(e), message_snippet)
+		except Exception as e:
 			self.fail('%s failed with %s(%s) instead of %s' % (method, type(e), e.message, exception_class))
 		if succeeded:
 			self.fail('%s did not fail with %s' % (method, exception_class))

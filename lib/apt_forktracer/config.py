@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ class Config:
 		"""Adds a given stanza for later retrieval."""
 		self._stanzas.append(stanza)
 		name = stanza.get('package')
-		if self._package_map.has_key(name):
+		if name in self._package_map:
 			self._package_map[name].append(stanza)
 		else:
 			self._package_map[name] = [ stanza ]
@@ -33,7 +33,7 @@ class Config:
 	def package(self, package_name):
 		"""Returns a (potentially empty) list of all stanzas for the given
 		package name."""
-		if self._package_map.has_key(package_name):
+		if package_name in self._package_map:
 			return self._package_map[package_name]
 		else:
 			return []

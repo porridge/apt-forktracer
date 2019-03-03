@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ class TestReporter(test_helper.MoxTestCase):
 	def testReporting(self):
 		"""Since this should print to stdout, we don't call it, just check the method's there."""
 		mock_status = self.struct()
-		self.assert_(self.reporter.report)
+		self.assertTrue(self.reporter.report)
 
 if __name__ == '__main__':
 	unittest.main()

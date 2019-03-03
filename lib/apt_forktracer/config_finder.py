@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ class _ConfigFinderIterator:
 	def __iter__(self):
 		return self
 
-	def next(self):
+	def __next__(self):
 		if len(self.cf.paths) > self.index:
 			path = self.cf.paths[self.index]
 			if self.file:

@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,10 +48,10 @@ class Newer_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 		self.mock_apt_pkg = apt_pkg
 	def test_states(self):
 		self.mox.ReplayAll()
-		self.assertEquals(self.apa.state_installed, apt_pkg.CURSTATE_INSTALLED)
-		self.assertEquals(self.apa.state_half_installed, apt_pkg.CURSTATE_HALF_INSTALLED)
-		self.assertEquals(self.apa.state_half_configured, apt_pkg.CURSTATE_HALF_CONFIGURED)
-		self.assertEquals(self.apa.state_unpacked, apt_pkg.CURSTATE_UNPACKED)
+		self.assertEqual(self.apa.state_installed, apt_pkg.CURSTATE_INSTALLED)
+		self.assertEqual(self.apa.state_half_installed, apt_pkg.CURSTATE_HALF_INSTALLED)
+		self.assertEqual(self.apa.state_half_configured, apt_pkg.CURSTATE_HALF_CONFIGURED)
+		self.assertEqual(self.apa.state_unpacked, apt_pkg.CURSTATE_UNPACKED)
 
 class Uninitialized_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 	def test_methods_fail_on_uninitialized_adapter(self):
@@ -90,8 +90,8 @@ class Initialized_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 		ca = self.apa.get_cache_adapter(mock_cache_adapter_factory, mock_reporter, mock_progress)
 		dca = self.apa.get_depcache_adapter(mock_depcache_adapter_factory)
 
-		self.assertEquals(ca, mock_cache_adapter)
-		self.assertEquals(dca, mock_depcache_adapter)
+		self.assertEqual(ca, mock_cache_adapter)
+		self.assertEqual(dca, mock_depcache_adapter)
 	def test_get_depcache_adapter_fails_without_earlier_get_cache_adapter(self):
 		mock_depcache_adapter_factory = self.mox.CreateMock(DepCacheAdapterFactory)
 		self.mox.ReplayAll()
@@ -101,26 +101,26 @@ class Initialized_Apt_Pkg_Adapter_Test(Base_Apt_Pkg_Adapter_Test):
 		self.assertRaises(ValueError, self.apa.version_compare, None, '1')
 		self.assertRaises(ValueError, self.apa.version_compare, '1', None)
 		self.assertRaises(ValueError, self.apa.version_compare, None, None)
-		self.assert_(self.apa.version_compare('0', '1') < 0)
-		self.assert_(self.apa.version_compare('1', '1') == 0)
-		self.assert_(self.apa.version_compare('1', '0') > 0)
+		self.assertTrue(self.apa.version_compare('0', '1') < 0)
+		self.assertTrue(self.apa.version_compare('1', '1') == 0)
+		self.assertTrue(self.apa.version_compare('1', '0') > 0)
 	def test_version_sort(self):
 		self.mox.ReplayAll()
-		self.assertEquals(self.apa.version_sort([]), [])
+		self.assertEqual(self.apa.version_sort([]), [])
 		v1 = VersionAdapter(FakeVersion._create('1', []))
 		v0 = VersionAdapter(FakeVersion._create('0', []))
 		v2 = VersionAdapter(FakeVersion._create('2.0', []))
 		v21 = VersionAdapter(FakeVersion._create('2.0~1', []))
-		self.assertEquals(self.apa.version_sort([v21]), [v21])
-		self.assertEquals(self.apa.version_sort([v1, v0, v21, v2]), [v2, v21, v1, v0])
+		self.assertEqual(self.apa.version_sort([v21]), [v21])
+		self.assertEqual(self.apa.version_sort([v1, v0, v21, v2]), [v2, v21, v1, v0])
 	def test_version_max_returns_None_on_empty_list(self):
 		self.mox.ReplayAll()
-		self.assertEquals(self.apa.version_max([]), None)
+		self.assertEqual(self.apa.version_max([]), None)
 		v2 = VersionAdapter(FakeVersion._create('2.0', []))
 		v21 = VersionAdapter(FakeVersion._create('2.0~1', []))
-		self.assertEquals(self.apa.version_max([v21]), v21)
-		self.assertEquals(self.apa.version_max([v2, v21]), v2)
-		self.assertEquals(self.apa.version_max([v21, v2]), v2)
+		self.assertEqual(self.apa.version_max([v21]), v21)
+		self.assertEqual(self.apa.version_max([v2, v21]), v2)
+		self.assertEqual(self.apa.version_max([v21, v2]), v2)
 
 if __name__ == '__main__':
 	unittest.main()

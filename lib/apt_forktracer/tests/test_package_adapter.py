@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,25 +39,25 @@ class TestBasePackageAdapter(test_helper.MoxTestCase):
 	def setUp_mangle_package_adapter(self):
 		pass
 	def testProperties(self):
-		self.assertEquals(self.pa.name, 'afake')
-		self.assertEquals(self.pa.apt_package, self.fake_package)
+		self.assertEqual(self.pa.name, 'afake')
+		self.assertEqual(self.pa.apt_package, self.fake_package)
 	def testLenOfVersionsNonNegative(self):
-		self.assert_(self.pa.versions >= 0)
+		self.assertTrue(len(self.pa.versions) >= 0)
 	def testBasicStringificationWorks(self):
 		self.assertContains(str(self.pa), 'PackageAdapter')
 	def setUpAddAVersion(self, source = 'NonDebian', version = 'blah'):
 		self.fake_package.append_version(FakeVersion._create(version, [source]))
 	def test_get_status_returns_an_object(self):
-		self.assert_(self.status)
-		self.assertEquals(self.status.package_name, 'afake')
-		self.assertEquals(self.status.installed_version, self.pa.current_version)
-		self.assertEquals(self.status.candidate_version, self.pa.candidate_version)
-		self.assert_(len(self.status.versions_by_origin) >= 0)
+		self.assertTrue(self.status)
+		self.assertEqual(self.status.package_name, 'afake')
+		self.assertEqual(self.status.installed_version, self.pa.current_version)
+		self.assertEqual(self.status.candidate_version, self.pa.candidate_version)
+		self.assertTrue(len(self.status.versions_by_origin) >= 0)
 
 class TestZeroVersionPackageAdapter(TestBasePackageAdapter):
 	def testEmptyVersions(self):
-		self.assertEquals(self.pa.versions, [])
-		self.assertEquals(len(self.status.versions_by_origin), 0)
+		self.assertEqual(self.pa.versions, [])
+		self.assertEqual(len(self.status.versions_by_origin), 0)
 	def testStringificationWorks(self):
 		self.assertContains(str(self.pa), 'v=None->None')
 
@@ -65,15 +65,15 @@ class TestOneOfficialVersionPackageAdapter(TestBasePackageAdapter):
 	def setUp_mangle_fake_package(self):
 		self.setUpAddAVersion('Debian')
 	def testOneVersion(self):
-		self.assertEquals(len(self.pa.versions), 1)
-		self.assertEquals(len(self.status.versions_by_origin), 1)
+		self.assertEqual(len(self.pa.versions), 1)
+		self.assertEqual(len(self.status.versions_by_origin), 1)
 
 class TestOneUnofficialVersionPackageAdapter(TestBasePackageAdapter):
 	def setUp_mangle_fake_package(self):
 		self.setUpAddAVersion()
 	def testOneVersion(self):
-		self.assertEquals(len(self.pa.versions), 1)
-		self.assertEquals(len(self.status.versions_by_origin), 1)
+		self.assertEqual(len(self.pa.versions), 1)
+		self.assertEqual(len(self.status.versions_by_origin), 1)
 
 class TestFourVersionPackageAdapter(TestBasePackageAdapter):
 	def setUp_mangle_fake_package(self):
@@ -83,10 +83,10 @@ class TestFourVersionPackageAdapter(TestBasePackageAdapter):
 		self.setUpAddAVersion('Debian', '2')
 		self.setUpAddAVersion('dpkg', '5')
 	def testFourVersions(self):
-		self.assertEquals(len(self.pa.versions), 5)
-		self.assertEquals(len(self.status.versions_by_origin), 2)
-		self.assertEquals(len(self.status.versions_by_origin['Debian']), 2)
-		self.assertEquals(len(self.status.versions_by_origin['NonDebian']), 2)
+		self.assertEqual(len(self.pa.versions), 5)
+		self.assertEqual(len(self.status.versions_by_origin), 2)
+		self.assertEqual(len(self.status.versions_by_origin['Debian']), 2)
+		self.assertEqual(len(self.status.versions_by_origin['NonDebian']), 2)
 
 class TestPackageAdapterWithInstalledVersion(TestBasePackageAdapter):
 	def setUp_mangle_fake_package(self):
@@ -97,8 +97,8 @@ class TestPackageAdapterWithInstalledVersion(TestBasePackageAdapter):
 	def setUp_mangle_package_adapter(self):
 		self.pa.candidate_version = '2.3.4'
 	def test_versions(self):
-		self.assertEquals(self.pa.current_version.string, '1.xx.yy')
-		self.assertEquals(len(self.status.versions_by_origin), 2)
+		self.assertEqual(self.pa.current_version.string, '1.xx.yy')
+		self.assertEqual(len(self.status.versions_by_origin), 2)
 	def testStringificationWorks(self):
 		self.assertMatches(str(self.pa), r'VersionAdapter.*1\.xx\.yy.*->2\.3\.4')
 

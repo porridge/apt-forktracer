@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -52,8 +52,8 @@ def run(verbose):
 def main(sys):
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], 'v', ['verbose'])
-	except getopt.GetoptError, err:
-		print str(err)
+	except getopt.GetoptError as err:
+		print(str(err))
 		sys.exit(1)
 	verbose = False
 	for o, a in opts:

@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,38 +24,38 @@ class Test_ConfigStanza(test_helper.MoxTestCase):
 	def setUp(self):
 		super(Test_ConfigStanza, self).setUp()
 		self.cs = ConfigStanza()
-		self.assert_(self.cs.is_empty())
+		self.assertTrue(self.cs.is_empty())
 	def test_empty(self):
 		self.assertRaisesWithMessageContaining(ValueError, 'line 2', self.cs.finish, 2)
 	def test_all_attributes(self):
 		self.cs.set('Package', 'dpkg', 2)
-		self.assert_(not self.cs.is_empty())
+		self.assertTrue(not self.cs.is_empty())
 		self.cs.set('Accept-Origin', 'NonDebian Stuff', 3)
 		self.cs.set('Track-oriGIN', 'Debian', 4)
 		self.cs.set('track-version', '1.2.3', 5)
-		self.assertEquals(self.cs.get('package'), 'dpkg')
-		self.assertEquals(self.cs.get('accept-origin'), 'NonDebian Stuff')
-		self.assert_(self.cs.matches('accept-origin', 'NonDebian Stuff'))
-		self.assert_(not self.cs.matches('accept-origin', 'Debian'))
-		self.assertEquals(self.cs.get('track-origin'), 'Debian')
-		self.assertEquals(self.cs.get('track-version'), '1.2.3')
-		self.assert_(not self.cs.is_empty())
-		self.assertEquals(self.cs.finish(6), self.cs)
+		self.assertEqual(self.cs.get('package'), 'dpkg')
+		self.assertEqual(self.cs.get('accept-origin'), 'NonDebian Stuff')
+		self.assertTrue(self.cs.matches('accept-origin', 'NonDebian Stuff'))
+		self.assertTrue(not self.cs.matches('accept-origin', 'Debian'))
+		self.assertEqual(self.cs.get('track-origin'), 'Debian')
+		self.assertEqual(self.cs.get('track-version'), '1.2.3')
+		self.assertTrue(not self.cs.is_empty())
+		self.assertEqual(self.cs.finish(6), self.cs)
 	def test_invalid_attribute(self):
 		self.assertRaisesWithMessageContaining(ValueError, 'invalid tag', self.cs.set, 'FoO', 'bar', 2)
 		self.assertRaisesWithMessageContaining(ValueError, 'line 2', self.cs.set, 'FoO', 'bar', 2)
 	def test_wildcard_attributes(self):
 		self.cs.set('Package', 'dpkg', 2)
-		self.assert_(not self.cs.is_empty())
+		self.assertTrue(not self.cs.is_empty())
 		self.cs.set('Accept-Origin', '*', 3)
 		self.cs.set('Track-oriGIN', '*', 4)
 		self.cs.set('track-version', '1.2.3', 5)
-		self.assertEquals(self.cs.get('accept-origin'), '*')
-		self.assert_(self.cs.matches('accept-origin', 'whatever'))
-		self.assertEquals(self.cs.get('track-origin'), '*')
-		self.assert_(self.cs.matches('track-origin', 'whatever'))
-		self.assert_(not self.cs.is_empty())
-		self.assertEquals(self.cs.finish(6), self.cs)
+		self.assertEqual(self.cs.get('accept-origin'), '*')
+		self.assertTrue(self.cs.matches('accept-origin', 'whatever'))
+		self.assertEqual(self.cs.get('track-origin'), '*')
+		self.assertTrue(self.cs.matches('track-origin', 'whatever'))
+		self.assertTrue(not self.cs.is_empty())
+		self.assertEqual(self.cs.finish(6), self.cs)
 
 if __name__ == '__main__':
 	unittest.main()

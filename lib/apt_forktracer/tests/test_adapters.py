@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-import mox
+from mox3 import mox as mox
 import unittest
 
 from apt_forktracer.testlib import test_helper
@@ -46,17 +46,17 @@ class Test_Package_And_Version_Reading(test_helper.MoxTestCase):
 		self.mox.ReplayAll()
 		self.p = PackageAdapter(self.fake)
 	def testPackageAndVersionsReadCorrectly(self):
-		self.assertEquals(self.p.name, 'afake')
-		self.assertEquals(len(self.p.versions), 2)
+		self.assertEqual(self.p.name, 'afake')
+		self.assertEqual(len(self.p.versions), 2)
 		v1 = self.p.versions[0]
-		self.assertEquals(v1.string, '1.2.3')
-		self.assertEquals(len(v1.files), 2)
+		self.assertEqual(v1.string, '1.2.3')
+		self.assertEqual(len(v1.files), 2)
 		v1pf0 = v1.files[0]
-		self.assertEquals(v1pf0.name, '/a/fake')
+		self.assertEqual(v1pf0.name, '/a/fake')
 		v1pf1 = v1.files[1]
-		self.assert_(v1pf1.not_automatic)
+		self.assertTrue(v1pf1.not_automatic)
 		v2 = self.p.versions[1]
-		self.assertEquals(v2.string, '4.5.6')
+		self.assertEqual(v2.string, '4.5.6')
 	def testStringificationWorks(self):
 		s = str(self.p)
 		self.assertContains(s, 'PackageAdapter')
@@ -91,7 +91,7 @@ class Test_With_Factory_Creation_With_Candidate(Test_Package_And_Version_Reading
 
 		self.p = PackageAdapterFactory(mock_depcache_adapter).create_package_adapter(self.fake)
 	def test_candidate_version(self):
-		self.assertEquals(self.p.candidate_version, self.va)
+		self.assertEqual(self.p.candidate_version, self.va)
 		s = str(self.p)
 		self.assertMatches(s, 'v=<.*1.2.3.*->.*<.*1.2.4')
 

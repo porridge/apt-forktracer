@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ class GeneralNonVerboseCheckerCheckTest(CheckerCheckTestCase):
 		pa = PackageAdapter(self.fp)
 		pa.candidate_version = None
 		status = self.checker.check(pa)
-		self.assert_(status != None)
+		self.assertTrue(status != None)
 	def test_returns_none_in_common_case(self):
 		"""Common case means: package with identical, officially-available
 		current and candidate versions, which is also the newest available
@@ -81,41 +81,41 @@ class GeneralNonVerboseCheckerCheckTest(CheckerCheckTestCase):
 		self.fp.append_version(FakeVersion._create('1.2.2', ['Debian']))
 		pa = PackageAdapter(self.fp)
 		pa.candidate_version = pa.current_version
-		self.assertEquals(self.checker.check(pa), None)
+		self.assertEqual(self.checker.check(pa), None)
 	def test_returns_none_in_common_case_when_all_versions_available_additionally_from_unofficial_source(self):
 		self.fp.append_version(FakeVersion._create('1.2.3', ['Debian', 'UnOfficial']), True)
 		self.fp.append_version(FakeVersion._create('1.2.2', ['Debian', 'UnOfficial']))
 		pa = PackageAdapter(self.fp)
 		pa.candidate_version = pa.current_version
-		self.assertEquals(self.checker.check(pa), None)
+		self.assertEqual(self.checker.check(pa), None)
 	def test_returns_a_status_object_on_package_with_same_current_and_candidate_both_only_locally(self):
 		self.fp.current_ver = FakeVersion._create('1.2.3', ['dpkg'])
 		pa = PackageAdapter(self.fp)
 		pa.candidate_version = pa.current_version
-		self.assert_(self.checker.check(pa) != None)
+		self.assertTrue(self.checker.check(pa) != None)
 	def test_returns_a_status_object_on_package_with_candidate_from_unofficial_source(self):
 		self.fp.append_version(FakeVersion._create('1.2.3', ['Unofficial']), True)
 		self.fp.append_version(FakeVersion._create('1.2', ['Debian']))
 		pa = PackageAdapter(self.fp)
 		pa.candidate_version = VersionAdapter(FakeVersion._create('1.2.5', ['NonDebian']))
 		status = self.checker.check(pa)
-		self.assert_(status != None)
-		self.assertEquals(status.package_name, 'afake')
-		self.assertEquals(status.installed_version.string, '1.2.3')
-		self.assertEquals(status.candidate_version.string, '1.2.5')
+		self.assertTrue(status != None)
+		self.assertEqual(status.package_name, 'afake')
+		self.assertEqual(status.installed_version.string, '1.2.3')
+		self.assertEqual(status.candidate_version.string, '1.2.5')
 	def test_package_without_candidate_version_and_current_unofficial(self):
 		self.fp.current_ver = FakeVersion._create('1.2.2', ['NotDebian'])
 		pa = PackageAdapter(self.fp)
 		pa.candidate_version = None
 		status = self.checker.check(pa)
-		self.assert_(status != None)
+		self.assertTrue(status != None)
 
 class NonVerboseCheckerCheckTest(GeneralNonVerboseCheckerCheckTest):
 	def test_returns_none_on_package_with_candidate_from_official_source_and_current_from_unofficial(self):
-		self.assertEquals(self.checker.check(self._prepare_package_with_candidate_from_official_source_and_current_from_unofficial()), None)
+		self.assertEqual(self.checker.check(self._prepare_package_with_candidate_from_official_source_and_current_from_unofficial()), None)
 	def test_returns_none_when_candidate_different_from_current(self):
 		pa = self._prepare_package_with_candidate_different_from_current()
-		self.assertEquals(self.checker.check(pa), None)
+		self.assertEqual(self.checker.check(pa), None)
 
 class VerboseCheckerCheckTest(GeneralNonVerboseCheckerCheckTest):
 	"""Returns None in less cases than in the non-verbose mode."""
@@ -123,10 +123,10 @@ class VerboseCheckerCheckTest(GeneralNonVerboseCheckerCheckTest):
 		self.checker = Checker(self._create_mock_facter('Debian'), True)
 	def test_returns_a_status_object_on_package_with_candidate_from_official_source_and_current_from_unofficial(self):
 		status = self.checker.check(self._prepare_package_with_candidate_from_official_source_and_current_from_unofficial())
-		self.assert_(status != None)
+		self.assertTrue(status != None)
 	def test_returns_a_status_object_when_candidate_different_from_current(self):
 		pa = self._prepare_package_with_candidate_different_from_current()
-		self.assert_(self.checker.check(pa) != None)
+		self.assertTrue(self.checker.check(pa) != None)
 
 if __name__ == '__main__':
 	unittest.main()

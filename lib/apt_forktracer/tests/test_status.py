@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,21 +35,21 @@ class TestInstantiation(test_helper.MoxTestCase):
 		self.versions_by_origin = {'Debian': [VersionAdapter(FakeVersion('foo'))], 'Another': [VersionAdapter(FakeVersion('bar')), VersionAdapter(FakeVersion('baz'))]}
 		self.s = Status('foo', installed_version, candidate_version, self.versions_by_origin)
 	def testCorrectness(self):
-		self.assertEquals(self.s.package_name, 'foo')
-		self.assertEquals(self.s.installed_version.string, '1.2.3')
-		self.assertEquals(self.s.candidate_version.string, '1.2.4')
+		self.assertEqual(self.s.package_name, 'foo')
+		self.assertEqual(self.s.installed_version.string, '1.2.3')
+		self.assertEqual(self.s.candidate_version.string, '1.2.4')
 		installed_ver_pkgs = self.s.installed_version.files
-		self.assertEquals(installed_ver_pkgs[0].origin, 'Debian')
-		self.assertEquals(self.s.versions_from('Debian')[0].string, 'foo')
-		self.assertEquals(self.s.versions_from('Another')[0].string, 'bar')
-		self.assertEquals(self.s.versions_from('Another')[1].string, 'baz')
-		self.assertEquals(self.s.versions_from('nowhere'), [])
+		self.assertEqual(installed_ver_pkgs[0].origin, 'Debian')
+		self.assertEqual(self.s.versions_from('Debian')[0].string, 'foo')
+		self.assertEqual(self.s.versions_from('Another')[0].string, 'bar')
+		self.assertEqual(self.s.versions_from('Another')[1].string, 'baz')
+		self.assertEqual(self.s.versions_from('nowhere'), [])
 		all = self.s.all_available_versions()
-		self.assertEquals(len(all), 3)
+		self.assertEqual(len(all), 3)
 		all_strings = [v.string for v in all]
 		all_strings.sort()
-		self.assert_('foo' in [v.string for v in all])
-		self.assert_('bar' in [v.string for v in all])
+		self.assertTrue('foo' in [v.string for v in all])
+		self.assertTrue('bar' in [v.string for v in all])
 	def testStringification(self):
 		self.assertMatches(str(self.s), r'<Status foo .*1\.2\.3.*->.*1\.2\.4.*\[Debian: foo\]')
 		self.assertMatches(str(self.s), r'<Status foo .*1\.2\.3.*->.*1\.2\.4.*\[Another: bar,baz\]')
@@ -66,13 +66,13 @@ class Test_Instantiation_Without_Official_Versions(test_helper.MoxTestCase):
 		self.versions_by_origin = {'NonDebian': [VersionAdapter(FakeVersion('foo'))]}
 		self.s = Status('foo', installed_version, candidate_version, self.versions_by_origin)
 	def testCorrectness(self):
-		self.assertEquals(self.s.package_name, 'foo')
-		self.assertEquals(self.s.installed_version.string, '1.2.5')
-		self.assertEquals(self.s.candidate_version.string, '1.2.6')
+		self.assertEqual(self.s.package_name, 'foo')
+		self.assertEqual(self.s.installed_version.string, '1.2.5')
+		self.assertEqual(self.s.candidate_version.string, '1.2.6')
 		installed_ver_pkgs = self.s.installed_version.files
-		self.assertEquals(installed_ver_pkgs[0].origin, 'Debian')
-		self.assertEquals(self.s.versions_from('NonDebian')[0].string, 'foo')
-		self.assertEquals(self.s.versions_from('nowhere'), [])
+		self.assertEqual(installed_ver_pkgs[0].origin, 'Debian')
+		self.assertEqual(self.s.versions_from('NonDebian')[0].string, 'foo')
+		self.assertEqual(self.s.versions_from('nowhere'), [])
 	def testStringification(self):
 		self.assertMatches(str(self.s), r'<Status foo .*1\.2\.5.*->.*1\.2\.6.*')
 

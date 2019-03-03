@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008-2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008-2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ class Facter:
 	def get_distrib_id_from_command(self, command):
 		try:
 			p = subprocess.Popen(command, stdout = subprocess.PIPE, shell = True)
-			output = p.stdout.readline()
+			output = p.stdout.readline().decode()
 			p.stdout.close()
 			p.wait()
 			if p.returncode == 0:

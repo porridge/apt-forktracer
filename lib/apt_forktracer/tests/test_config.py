@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,12 +40,12 @@ class Test_Config(test_helper.MoxTestCase):
 		foo_stanzas = self.c.package('foo')
 		bar_stanzas = self.c.package('bar')
 		baz_stanzas = self.c.package('baz')
-		self.assertEquals(len(foo_stanzas), 2)
-		self.assertEquals(foo_stanzas[0], foo_stanza1)
-		self.assertEquals(foo_stanzas[1], foo_stanza2)
-		self.assertEquals(len(bar_stanzas), 1)
-		self.assertEquals(bar_stanzas[0], bar_stanza)
-		self.assertEquals(len(baz_stanzas), 0)
+		self.assertEqual(len(foo_stanzas), 2)
+		self.assertEqual(foo_stanzas[0], foo_stanza1)
+		self.assertEqual(foo_stanzas[1], foo_stanza2)
+		self.assertEqual(len(bar_stanzas), 1)
+		self.assertEqual(bar_stanzas[0], bar_stanza)
+		self.assertEqual(len(baz_stanzas), 0)
 
 
 if __name__ == '__main__':

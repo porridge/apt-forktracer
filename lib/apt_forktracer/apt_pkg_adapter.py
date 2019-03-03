@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +15,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+
+import functools
+
+
 class NullProgress:
 	"""Makes libapt shut up when passed to Cache()."""
 	def __init__(self, *args, **kwargs):
@@ -23,6 +27,7 @@ class NullProgress:
 		pass
 	def done(self, *args, **kwargs):
 		pass
+
 
 class AptPkgAdapter:
 	"""Wraps the apt_pkg module.
@@ -94,7 +99,7 @@ class AptPkgAdapter:
 		Throws an exception if called before init(). 
 		"""
 		self._assert_initialized()
-		versions.sort(lambda va,vb: self.version_compare(va.string, vb.string), reverse = True)
+		versions.sort(key=functools.cmp_to_key(lambda va,vb: self.version_compare(va.string, vb.string)), reverse=True)
 		return versions
 
 	def version_max(self, versions):

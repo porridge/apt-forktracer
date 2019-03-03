@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008-2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008-2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,35 +23,35 @@ class TestFacterWithoutArgs(unittest.TestCase):
 	def setUp(self):
 		self.facter = Facter()
 	def testDistributorsIdReturnsSomething(self):
-		self.assert_(self.facter.distributors_id)
+		self.assertTrue(self.facter.distributors_id)
 
 class TestFacterWithLSBReleaseModuleArg(unittest.TestCase):
 	def setUp(self):
 		self.facter = Facter(lsb_release_module = 'apt_forktracer.testlib.fake_lsb_release')
 	def testDistributorsIdReturnsFakeDistribursId(self):
-		self.assertEquals(self.facter.distributors_id, 'fake_distributors_id')
+		self.assertEqual(self.facter.distributors_id, 'fake_distributors_id')
 
 class TestFacterWithLSBReleaseArg(unittest.TestCase):
 	def setUp(self):
 		self.facter = Facter(lsb_release_module = 'non.existant', lsb_release = 'echo Foobar')
 	def testDistributorsIdReturnsFoobar(self):
-		self.assertEquals(self.facter.distributors_id, 'Foobar')
+		self.assertEqual(self.facter.distributors_id, 'Foobar')
 
 class TestFacterWithBrokenLSBReleaseArgAndValidFileArg(unittest.TestCase):
 	def setUp(self):
 		self.facter = Facter(lsb_release_module = 'non.existant', lsb_release = 'false', file = 'test-data/lsb-release')
 	def testDistributorsIdReturnsUbuntu(self):
-		self.assertEquals(self.facter.distributors_id, 'Ubuntu-in-test-data')
+		self.assertEqual(self.facter.distributors_id, 'Ubuntu-in-test-data')
 
 class TestFacterReadFirstWord(unittest.TestCase):
 	def setUp(self):
 		self.facter = Facter()
 	def testUsualIssueFile(self):
-		self.assertEquals(self.facter.get_distrib_id_from_file('test-data/lsb-release'), 'Ubuntu-in-test-data')
+		self.assertEqual(self.facter.get_distrib_id_from_file('test-data/lsb-release'), 'Ubuntu-in-test-data')
 	def testEmptyFile(self):
-		self.assertEquals(self.facter.get_distrib_id_from_file('test-data/empty'), None)
+		self.assertEqual(self.facter.get_distrib_id_from_file('test-data/empty'), None)
 	def testMissingFile(self):
-		self.assertEquals(self.facter.get_distrib_id_from_file('test-data/does_not_exist'), None)
+		self.assertEqual(self.facter.get_distrib_id_from_file('test-data/does_not_exist'), None)
 
 if __name__ == '__main__':
 	unittest.main()

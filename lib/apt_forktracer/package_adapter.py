@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ class PackageAdapter:
 				origin = pfa.origin
 				if not origin:
 					continue
-				if versions_by_origin.has_key(origin):
+				if origin in versions_by_origin:
 					versions_by_origin[origin].append(version)
 				else:
 					versions_by_origin[origin] = [version]

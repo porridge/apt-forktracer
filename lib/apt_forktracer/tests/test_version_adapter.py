@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,10 +32,7 @@ class TestBaseVersionAdapter(test_helper.MoxTestCase):
 	def setUpVersionAdapter(self):
 		self.va = VersionAdapter(self.fake_version)
 	def testString(self):
-		self.assertEquals(self.va.string, '1.2.3')
-	def testLenOfFilesListPositive(self):
-		"If there is a version, it must come from at least one file (dpkg status)."
-		self.assert_(self.va.files > 0)
+		self.assertEqual(self.va.string, '1.2.3')
 	def testBasicStringification(self):
 		self.assertMatches(str(self.va), r'<VersionAdapter 1.2.3')
 	def setUpAddAFile(self):
@@ -50,9 +47,9 @@ class TestVersionOfficiallyAvailable(test_helper.MoxTestCase):
 		self.mock_apt_version.file_list = [(FakePackageFile(type = 'dpkg'), 1)]
 		self.mock_facter = self._create_mock_facter('Debian')
 	def assertVersionIsOfficiallyAvailable(self):
-		self.assert_(VersionAdapter(self.mock_apt_version).is_officially_available(self.mock_facter))
+		self.assertTrue(VersionAdapter(self.mock_apt_version).is_officially_available(self.mock_facter))
 	def assertVersionIsNotOfficiallyAvailable(self):
-		self.assert_(not VersionAdapter(self.mock_apt_version).is_officially_available(self.mock_facter))
+		self.assertTrue(not VersionAdapter(self.mock_apt_version).is_officially_available(self.mock_facter))
 	def testVersionNotAvailableApartFromInstalled(self):
 		self.assertVersionIsNotOfficiallyAvailable()
 	def testVersionAvailableFromUnofficialPackageFile(self):
@@ -68,7 +65,7 @@ class TestVersionOfficiallyAvailable(test_helper.MoxTestCase):
 
 class TestZeroFileVersionAdapter(TestBaseVersionAdapter):
 	def testFileCount(self):
-		self.assertEquals(len(self.va.files), 0)
+		self.assertEqual(len(self.va.files), 0)
 	def testStringification(self):
 		self.assertMatches(str(self.va), r'<VersionAdapter 1.2.3 \[\]>')
 
@@ -79,8 +76,8 @@ class TestOneFileVersionAdapter(TestBaseVersionAdapter):
 		self.setUpAddAFile()
 		self.setUpVersionAdapter()
 	def testFileCount(self):
-		self.assertEquals(len(self.va.files), 1)
-		self.assertEquals(self.va.files[0].name, '/b/lah')
+		self.assertEqual(len(self.va.files), 1)
+		self.assertEqual(self.va.files[0].name, '/b/lah')
 	def testStringification(self):
 		self.assertMatches(str(self.va), r'<VersionAdapter 1.2.3 \[.*/b/lah.*\]>')
 
@@ -91,8 +88,8 @@ class TestThreeFilesVersionAdapter(TestBaseVersionAdapter):
 		for i in range(3):
 			self.setUpAddAFile()
 		self.setUpVersionAdapter()
-	def testOneFile(self):
-		self.assertEquals(len(self.va.files), 3)
+	def testThreeFiles(self):
+		self.assertEqual(len(self.va.files), 3)
 	def testStringification(self):
 		self.assertMatches(str(self.va), r'<VersionAdapter 1.2.3 \[.*/b/lah.*/b/lah.*/b/lah.*\]>')
 
