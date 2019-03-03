@@ -1,10 +1,10 @@
 #!/usr/bin/make -f
 %:
-	dh $@ --with python2
+	dh $@ --with python3
 
 # Install the module as private.
 override_dh_auto_install:
-	python setup.py install --no-compile \
+	python3 setup.py install --no-compile \
 		--root=debian/apt-forktracer \
 		--install-layout=deb \
 		--install-scripts=/usr/bin \

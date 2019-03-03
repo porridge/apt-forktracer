@@ -1,3 +1,10 @@
+apt-forktracer (0.6) UNRELEASED; urgency=medium
+
+  * Converted to Python 3
+  * Bumped Standards-Version and DH compat level
+
+ -- Marcin Owsiany <porridge@debian.org>  Sun, 03 Mar 2019 14:15:17 +0100
+
 apt-forktracer (0.5) unstable; urgency=low
 
   * Migrate from python-support to dh-python. (Closes: #785958)

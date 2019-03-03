@@ -2,13 +2,15 @@ Source: apt-forktracer
 Section: admin
 Priority: optional
 Maintainer: Marcin Owsiany <porridge@debian.org>
-Build-Depends: debhelper (>= 8), python (>= 2.6.6-3~), dh-python
-Standards-Version: 3.9.6
-X-Python-Version: >= 2.4
+Build-Depends: debhelper (>> 9), python3, dh-python
+Standards-Version: 4.3.0
+Homepage: http://owsiany.pl/apt-forktracer-page
+Vcs-Git: https://github.com/porridge/apt-forktracer
+Vcs-Browser: https://github.com/porridge/apt-forktracer
 
 Package: apt-forktracer
 Architecture: all
-Depends: python-apt (>= 0.7.93.2), ${python:Depends}, ${misc:Depends}, lsb-release (>= 3.2-21)
+Depends: python3-apt, ${python3:Depends}, ${misc:Depends}, lsb-release (>= 3.2-21)
 Description: utility for tracking non-official package versions
  apt-forktracer tries to alleviate the problem that APT stops tracking official
  versions of a package after you pin it or install a newer version.
