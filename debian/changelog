@@ -1,3 +1,10 @@
+apt-forktracer (0.7) unstable; urgency=medium
+
+  * Explicitly specify pybuild buildsystem to prevent debhelper from crashing
+    due to lack of pyversions. (Closes: #923716)
+
+ -- Marcin Owsiany <porridge@debian.org>  Mon, 04 Mar 2019 19:40:18 +0100
+
 apt-forktracer (0.6) unstable; urgency=low
 
   * Converted to Python 3

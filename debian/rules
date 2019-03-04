@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 %:
-	dh $@ --with python3
+	dh $@ --with python3 --buildsystem=pybuild
 
 # Install the module as private.
 override_dh_auto_install:
