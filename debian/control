@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: Marcin Owsiany <porridge@debian.org>
 Build-Depends: debhelper-compat (= 12), python3, dh-python
-Standards-Version: 4.4.1
+Standards-Version: 4.5.0
 Homepage: http://owsiany.pl/apt-forktracer-page
 Vcs-Git: https://github.com/porridge/apt-forktracer.git
 Vcs-Browser: https://github.com/porridge/apt-forktracer

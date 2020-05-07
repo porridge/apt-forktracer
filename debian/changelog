@@ -4,6 +4,7 @@ apt-forktracer (0.8) UNRELEASED; urgency=medium
   * Set debhelper-compat version in Build-Depends.
   * Use canonical URL in Vcs-Git.
   * Update standards version to 4.4.1, no changes needed.
+  * Update standards version to 4.5.0, no changes needed.
 
  -- Debian Janitor <janitor@jelmer.uk>  Sat, 11 Apr 2020 13:52:53 +0000
 
