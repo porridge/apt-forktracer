@@ -1,5 +1,5 @@
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008-2010,2019 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008-2020 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os
 import re
 import subprocess
 import sys
@@ -45,6 +46,9 @@ class Facter:
 			self.distributors_id = self.get_distrib_id_from_command(lsb_release)
 		if not self.distributors_id:
 			self.distributors_id = self.get_distrib_id_from_file(file)
+		overridden_id = os.getenv('APT_FORKTRACER_OVERRIDE_DISTRIBUTOR_ID')
+		if overridden_id:
+			self.distributors_id = overridden_id
 		if not self.distributors_id:
 			raise RuntimeError('Could not obtain distributors id from lsb_release')
 
@@ -80,4 +84,3 @@ class Facter:
 			return distinfo['ID']
 		except ImportError:
 			pass
- 

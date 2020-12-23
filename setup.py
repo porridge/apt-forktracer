@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # apt-forktracer - a utility for managing package versions
-# Copyright (C) 2008,2010,2019 Marcin Owsiany <porridge@debian.org>
+# Copyright (C) 2008-2020 Marcin Owsiany <porridge@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 from distutils.core import setup
 setup(name = 'apt-forktracer',
-	version = '0.3',
+	version = '0.8',
 	description = 'Debian packages version tracing utility',
 	author = 'Marcin Owsiany',
 	author_email = 'marcin@owsiany.pl',

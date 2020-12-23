@@ -1,2 +1,8 @@
 Test-Command: apt-forktracer
 Features: test-name=smoke
+
+Test-Command: apt-forktracer --verbose
+Features: test-name=verbose
+
+Test-Command: APT_FORKTRACER_OVERRIDE_DISTRIBUTOR_ID=fake-id apt-forktracer | grep .
+Features: test-name=report-everything

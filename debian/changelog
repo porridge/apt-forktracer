@@ -1,12 +1,19 @@
-apt-forktracer (0.8) UNRELEASED; urgency=medium
+apt-forktracer (0.8) unstable; urgency=medium
+
+  [Debian Janitor <janitor@jelmer.uk>]
 
   * Bump debhelper from old 9 to 12.
   * Set debhelper-compat version in Build-Depends.
   * Use canonical URL in Vcs-Git.
-  * Update standards version to 4.4.1, no changes needed.
   * Update standards version to 4.5.0, no changes needed.
 
- -- Debian Janitor <janitor@jelmer.uk>  Sat, 11 Apr 2020 13:52:53 +0000
+  [Marcin Owsiany]
+
+  * Add a couple more ways of calling the program, to increase coverage
+    enough not to warrant a "superficial" restriction. (Closes: #974435)
+  * Update standards version to 4.5.1, no changes needed.
+
+ -- Marcin Owsiany <porridge@debian.org>  Tue, 22 Dec 2020 10:52:55 +0100
 
 apt-forktracer (0.7) unstable; urgency=medium
 
