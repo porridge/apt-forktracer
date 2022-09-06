@@ -1,3 +1,11 @@
+apt-forktracer (0.10) UNRELEASED; urgency=medium
+
+  * Use secure URI in Homepage field.
+  * Bump debhelper from old 12 to 13.
+  * Update standards version to 4.6.1, no changes needed.
+
+ -- Debian Janitor <janitor@jelmer.uk>  Tue, 06 Sep 2022 17:17:31 -0000
+
 apt-forktracer (0.9) unstable; urgency=medium
 
   * Version bump only, just to be able to do a source-only upload.
