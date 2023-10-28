@@ -18,7 +18,7 @@
 
 from distutils.core import setup
 setup(name = 'apt-forktracer',
-	version = '0.8',
+	version = '0.10',
 	description = 'Debian packages version tracing utility',
 	author = 'Marcin Owsiany',
 	author_email = 'marcin@owsiany.pl',
