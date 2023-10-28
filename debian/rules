@@ -9,4 +9,4 @@ override_dh_auto_install:
 		--install-layout=deb \
 		--install-scripts=/usr/bin \
 		--install-lib=/usr/share/apt-forktracer
-	rm -f debian/apt-forktracer/usr/share/apt-forktracer/apt_forktracer-*.egg-info
+	rm -rf debian/apt-forktracer/usr/share/apt-forktracer/apt_forktracer-*.egg-info
