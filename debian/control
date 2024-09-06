@@ -2,8 +2,8 @@ Source: apt-forktracer
 Section: admin
 Priority: optional
 Maintainer: Marcin Owsiany <porridge@debian.org>
-Build-Depends: debhelper-compat (= 13), python3, dh-python
-Standards-Version: 4.6.1
+Build-Depends: debhelper-compat (= 13), python3, dh-python, python3-setuptools
+Standards-Version: 4.7.0
 Homepage: https://owsiany.pl/apt-forktracer-page
 Vcs-Git: https://github.com/porridge/apt-forktracer.git
 Vcs-Browser: https://github.com/porridge/apt-forktracer
